@@ -26,6 +26,7 @@ Este diretorio e a base viva de documentacao do projeto. Ele registra o estado a
 - [09 - Fundacao multi-tenant](./09-multi-tenant.md): migration, decisoes, modelo de tenants/memberships e pendencias de SaaS.
 - [10 - Testes de login e isolamento](./10-testes-login-isolamento.md): como criar contas/tenants de teste e validar isolamento no navegador.
 - [11 - Criacao de conta SaaS](./11-criacao-conta-saas.md): fluxo publico de cadastro de nova escolinha, confirmacao de e-mail e variaveis de ambiente.
+- [12 - Plano executivo V1 SaaS](./12-plano-executivo-v1-saas.md): fases, entregaveis, paginas, Stripe, Cora, riscos e criterios de pronto para a V1.
 
 ## Principio de trabalho daqui em diante
 

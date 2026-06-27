@@ -63,6 +63,7 @@ O objetivo desta rodada foi mover as telas para a mesma linguagem do prototipo: 
 | Navegacao | drawer lateral com icones lucide e estado ativo `bg-primary text-primary-foreground` |
 | Botoes primarios | `bg-primary text-primary-foreground hover:bg-primary/90` |
 | Inputs | borda `border-input`, foco `ring-primary` |
+| Autenticacao | `AuthCard` compartilhado para login, criacao de conta e estados de confirmacao |
 
 ## Arquivos-base do design
 
@@ -76,8 +77,21 @@ O objetivo desta rodada foi mover as telas para a mesma linguagem do prototipo: 
 - `components/shared/metric-card.tsx`
 - `components/shared/section.tsx`
 - `components/shared/filters.tsx`
+- `components/shared/auth-card.tsx`
+- `components/shared/password-input.tsx`
 - `components/shared/table-pagination.tsx`
 - `components/shared/table-details-button.tsx`
+
+## Regra para telas de autenticacao
+
+Login, criacao de conta SaaS, recuperacao de senha e confirmacao de e-mail pertencem a mesma familia visual. Elas devem reaproveitar:
+
+- `components/shared/auth-card.tsx` para moldura, marca, card e rodape;
+- `components/shared/password-input.tsx` para senha com mostrar/ocultar;
+- `AuthError` para mensagens de erro;
+- os mesmos espacamentos, CTA inferior e hierarquia tipografica.
+
+O conteudo interno pode mudar conforme a regra de negocio, mas a visualizacao base nao deve ser reimplementada pagina por pagina.
 
 ## Proximo passo visual recomendado
 

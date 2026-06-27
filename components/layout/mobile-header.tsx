@@ -77,7 +77,7 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`)
 }
 
-function BrandBlock({ compact = false, subtitle }: { compact?: boolean; subtitle: string }) {
+function BrandBlock({ compact = false, subtitle, username, isAdmin }: { compact?: boolean; subtitle: string, username: string, isAdmin: boolean }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
       <div
@@ -90,9 +90,13 @@ function BrandBlock({ compact = false, subtitle }: { compact?: boolean; subtitle
       </div>
       <div className="min-w-0">
         <p className={cn("truncate font-semibold leading-tight", compact ? "text-sm" : "text-lg")}>
-          {compact ? brand.shortName : brand.appName}
+          {compact ? brand.appName : brand.shortName}
         </p>
-        <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+        <p className="truncate text-xs text-muted-foreground">{compact ? username : (
+          <span className="inline-flex rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            {isAdmin ? "Administrador" : "Professora"}
+          </span>
+        )}</p>
       </div>
     </div>
   )
@@ -199,21 +203,7 @@ export function MobileHeader({ title, userName: userNameProp, userPapel: userPap
             </SheetHeader>
 
             <div className="flex h-16 shrink-0 items-center border-b px-6">
-              <BrandBlock subtitle={subtitle} />
-            </div>
-
-            <div className="border-b px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold">{userName}</p>
-                  <span className="inline-flex rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                    {isAdmin ? "Administrador" : "Professora"}
-                  </span>
-                </div>
-              </div>
+              <BrandBlock subtitle={subtitle} username={userName} isAdmin={isAdmin} />
             </div>
 
             <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -234,7 +224,7 @@ export function MobileHeader({ title, userName: userNameProp, userPapel: userPap
         </Sheet>
 
         <div className="min-w-0 flex-1">
-          <BrandBlock compact subtitle={subtitle} />
+          <BrandBlock compact subtitle={subtitle} username={userName} isAdmin={isAdmin} />
         </div>
 
         <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">

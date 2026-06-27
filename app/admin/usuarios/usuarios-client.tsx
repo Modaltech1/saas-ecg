@@ -81,7 +81,7 @@ export function UsuariosClient({
       <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
         <Card>
           <CardHeader>
-            <CardTitle>Usuarios do tenant</CardTitle>
+            <CardTitle>Usuarios</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {usuarios.length === 0 ? (
