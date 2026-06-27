@@ -139,8 +139,10 @@ Estado atual:
 Implementado nesta fase:
 
 - migration `scripts/migrations/20260626_0003_account_signup_onboarding.sql`;
+- migration corretiva `scripts/migrations/20260627_0004_fix_auth_profile_onboarding_trigger.sql`;
 - tabela `tenant_account_signups`;
 - ajuste no trigger `handle_novo_usuario()` para onboarding SaaS entrar como perfil inativo e membership `convidado`;
+- garantia explicita do trigger `on_auth_user_created` em `auth.users`;
 - pagina publica `/criar-conta`;
 - callback `/auth/confirm`.
 

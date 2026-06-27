@@ -20,6 +20,7 @@ Este documento registra o estado do schema e das integracoes. A partir de 2026-0
 | `scripts/migrations/20260626_0001_multi_tenant_foundation.sql` | Executada no banco de teste segundo usuario; isolamento validado por teste real | Criar `tenants`, `tenant_memberships`, adicionar `tenant_id`, backfillar tenant legado, recriar RLS tenant-aware e bloquear referencias cross-tenant |
 | `scripts/migrations/20260626_0002_tenant_cora_config.sql` | Executada no banco de teste segundo usuario | Criar configuracoes/credenciais Cora por tenant |
 | `scripts/migrations/20260626_0003_account_signup_onboarding.sql` | Criada, pendente de execucao pelo usuario | Suportar cadastro publico de nova conta SaaS com tenant pendente e ativacao apos confirmacao de e-mail |
+| `scripts/migrations/20260627_0004_fix_auth_profile_onboarding_trigger.sql` | Criada, pendente de execucao pelo usuario | Garantir trigger `auth.users -> perfis/tenant_memberships` e corrigir contas SaaS ja criadas sem perfil |
 
 Regra: toda mudanca futura de banco deve entrar como nova migration em `scripts/migrations/` e este documento deve ser atualizado junto.
 
@@ -231,7 +232,7 @@ Quando a migration for executada no banco de teste:
 
 Lacunas restantes:
 
-- apos rodar `20260626_0003_account_signup_onboarding.sql`, testar `/criar-conta` com confirmacao real de e-mail;
+- apos rodar `20260627_0004_fix_auth_profile_onboarding_trigger.sql`, testar login da conta criada que ficou sem `perfis`;
 - crons financeiros globais devem continuar iterando por tenant e exigir `CRON_SECRET`;
 - `perfis` ainda representa o perfil default do usuario; o vinculo SaaS real fica em `tenant_memberships`;
 - falta teste integrado com mocks da Cora, sem chamada externa real.

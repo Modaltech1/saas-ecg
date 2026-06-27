@@ -1,59 +1,8 @@
 import { type EmailOtpType } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
 import { safeAccountNextPath } from "@/lib/account-onboarding"
+import { ensureSaasAccountActivated } from "@/lib/account-onboarding-server"
 import { createAdminClient, createClient } from "@/lib/supabase/server"
-
-async function ativarContaSaas(userId: string, metadata: Record<string, unknown>) {
-  if (metadata.onboarding_tipo !== "nova_conta_saas") return
-
-  const tenantId = typeof metadata.tenant_id === "string" ? metadata.tenant_id : null
-  if (!tenantId) return
-
-  const db = createAdminClient()
-  const confirmedAt = new Date().toISOString()
-
-  const { data: tenant } = await db
-    .from("tenants")
-    .select("id, metadata")
-    .eq("id", tenantId)
-    .maybeSingle()
-
-  const tenantMetadata =
-    tenant && typeof tenant.metadata === "object" && tenant.metadata !== null
-      ? tenant.metadata as Record<string, unknown>
-      : {}
-
-  await db
-    .from("tenants")
-    .update({
-      status: "ativo",
-      metadata: {
-        ...tenantMetadata,
-        onboarding_confirmado_em: confirmedAt,
-      },
-      atualizado_em: confirmedAt,
-    })
-    .eq("id", tenantId)
-    .in("status", ["pendente_confirmacao", "ativo"])
-
-  await Promise.all([
-    db
-      .from("perfis")
-      .update({ ativo: true })
-      .eq("id", userId)
-      .eq("tenant_id", tenantId),
-    db
-      .from("tenant_memberships")
-      .update({ status: "ativo", is_default: true, atualizado_em: confirmedAt })
-      .eq("user_id", userId)
-      .eq("tenant_id", tenantId),
-    db
-      .from("tenant_account_signups")
-      .update({ status: "confirmado", confirmado_em: confirmedAt })
-      .eq("user_id", userId)
-      .eq("tenant_id", tenantId),
-  ])
-}
 
 export async function GET(request: NextRequest) {
   const requestUrl = request.nextUrl
@@ -80,7 +29,7 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user?.id && (user.email_confirmed_at || user.confirmed_at)) {
-    await ativarContaSaas(user.id, user.user_metadata)
+    await ensureSaasAccountActivated(createAdminClient(), user)
   }
 
   const redirectUrl = new URL(nextPath, requestUrl.origin)

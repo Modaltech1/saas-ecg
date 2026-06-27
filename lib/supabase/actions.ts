@@ -3,6 +3,7 @@
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { isValidAccountSlug, normalizarSlugConta } from "@/lib/account-onboarding"
+import { ensureSaasAccountActivated } from "@/lib/account-onboarding-server"
 import { requireTenantContext } from "@/lib/tenant"
 import { createClient, createAdminClient } from "@/lib/supabase/server"
 
@@ -35,6 +36,7 @@ export async function login(formData: FormData) {
   }
 
   const adminClient = createAdminClient()
+  await ensureSaasAccountActivated(adminClient, data.user)
 
   const [{ data: perfil }, { data: memberships }] = await Promise.all([
     adminClient

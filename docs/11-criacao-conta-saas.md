@@ -39,9 +39,16 @@ Antes de testar, execute manualmente:
 
 ```txt
 scripts/migrations/20260626_0003_account_signup_onboarding.sql
+scripts/migrations/20260627_0004_fix_auth_profile_onboarding_trigger.sql
 ```
 
 Codex nunca executa essa migration no banco.
+
+## Correcao de perfil ausente
+
+Se o Supabase Auth mostrar o usuario confirmado, mas `public.perfis` estiver vazio, o login retornara "Seu acesso esta inativo ou invalido". A causa provavel e ausencia do trigger `on_auth_user_created`.
+
+A migration `0004` corrige isso e faz backfill das contas SaaS ja criadas pelo fluxo `/criar-conta`.
 
 ## Variaveis de ambiente
 

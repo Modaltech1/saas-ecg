@@ -13,6 +13,7 @@ Rode no banco de teste, nesta ordem:
 1. `scripts/migrations/20260626_0001_multi_tenant_foundation.sql`
 2. `scripts/migrations/20260626_0002_tenant_cora_config.sql`
 3. `scripts/migrations/20260626_0003_account_signup_onboarding.sql`
+4. `scripts/migrations/20260627_0004_fix_auth_profile_onboarding_trigger.sql`
 
 ## Fluxos corretos
 
@@ -26,7 +27,7 @@ Rode no banco de teste, nesta ordem:
 
 ## Teste manual de nova conta
 
-1. Rode a migration `0003`.
+1. Rode as migrations ate a `0004`.
 2. Configure as variaveis de ambiente e Redirect URLs descritas em [11 - Criacao de conta SaaS](./11-criacao-conta-saas.md).
 3. Abra `/criar-conta`.
 4. Crie uma conta com e-mail real de teste.
@@ -35,6 +36,23 @@ Rode no banco de teste, nesta ordem:
 7. Crie um polo ou outro dado simples.
 8. Saia e entre com o tenant legado.
 9. Confirme que o dado da nova escolinha nao aparece no tenant legado.
+
+## Se o usuario existe no Auth mas `perfis` esta vazio
+
+Isso indica que o trigger `on_auth_user_created` nao existia ou nao disparou quando o usuario foi criado. Rode a migration:
+
+```txt
+scripts/migrations/20260627_0004_fix_auth_profile_onboarding_trigger.sql
+```
+
+Ela:
+
+- recria o trigger em `auth.users`;
+- faz backfill de `perfis`;
+- faz backfill de `tenant_memberships`;
+- ativa o tenant se o e-mail ja estiver confirmado.
+
+Depois de publicar o codigo atual na Vercel, o login tambem tenta reparar a conta SaaS confirmada se encontrar metadata de onboarding no usuario do Auth.
 
 ## Teste automatizado de isolamento
 
