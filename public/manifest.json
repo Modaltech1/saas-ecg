@@ -1,0 +1,38 @@
+{
+  "name": "Equipe Carolina Garcia",
+  "short_name": "Equipe Carolina Garcia",
+  "description": "Prodexy Labs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#52c893",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "sports"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Admin",
+      "url": "/admin",
+      "description": "Área administrativa"
+    },
+    {
+      "name": "Professora",
+      "url": "/professora",
+      "description": "Área da professora"
+    }
+  ]
+}

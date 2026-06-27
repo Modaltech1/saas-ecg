@@ -1,0 +1,101 @@
+:root {
+  --background: #f8fbf2;
+  --foreground: #132c38;
+
+  --card: #ffffff;
+  --card-foreground: #132c38;
+
+  --popover: #ffffff;
+  --popover-foreground: #132c38;
+
+  --primary: #0b9bd3;
+  --primary-foreground: #ffffff;
+  --primary-hover: #087fac;
+  --primary-light: #e8f7fc;
+
+  --secondary: #ffe8a8;
+  --secondary-foreground: #4b3a05;
+
+  --muted: #eef5e1;
+  --muted-foreground: #5f6f75;
+
+  --accent: #fff3cf;
+  --accent-foreground: #173f4f;
+
+  --destructive: #d84a35;
+  --destructive-foreground: #ffffff;
+  --error: #d84a35;
+
+  --border: #dbe5cf;
+  --input: #edf4e4;
+  --ring: #0b9bd3;
+
+  --background-secondary: #f8fbf2;
+  --background-tertiary: #eef5e1;
+  --foreground-secondary: #5f6f75;
+  --foreground-muted: #8a999f;
+  --card-hover: #f9fcf4;
+  --success: #2f9e73;
+  --warning: #c78b11;
+  --info: #0b9bd3;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #173f4f;
+  --sidebar-primary: #0b9bd3;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef8fc;
+  --sidebar-accent-foreground: #173f4f;
+  --sidebar-border: #dbe5cf;
+  --sidebar-ring: #0b9bd3;
+
+  --chart-1: #0b9bd3;
+  --chart-2: #ffca28;
+  --chart-3: #fb7730;
+  --chart-4: #a8cf45;
+  --chart-5: #164c60;
+
+  --radius: 12px;
+  --font-heading: "Poppins", "Segoe UI", sans-serif;
+  --font-body: "DM Sans", "Inter", "Segoe UI", sans-serif;
+}
+
+.dark {
+  --background: #132c38;
+  --foreground: #f8fbf2;
+  --card: #173f4f;
+  --card-foreground: #f8fbf2;
+  --popover: #173f4f;
+  --popover-foreground: #f8fbf2;
+  --primary: #39b6e5;
+  --primary-foreground: #08222d;
+  --primary-hover: #73caec;
+  --primary-light: #153848;
+  --secondary: #4b3a05;
+  --secondary-foreground: #ffe8a8;
+  --muted: #1e4858;
+  --muted-foreground: #bfd0d6;
+  --accent: #4a351d;
+  --accent-foreground: #fff3cf;
+  --destructive: #f27461;
+  --destructive-foreground: #ffffff;
+  --error: #f27461;
+  --border: #285768;
+  --input: #1e4858;
+  --ring: #39b6e5;
+  --background-secondary: #102733;
+  --background-tertiary: #1e4858;
+  --foreground-secondary: #bfd0d6;
+  --foreground-muted: #91aab3;
+  --card-hover: #1a4658;
+  --success: #5dc99b;
+  --warning: #f1bd4a;
+  --info: #39b6e5;
+  --sidebar: #173f4f;
+  --sidebar-foreground: #f8fbf2;
+  --sidebar-primary: #39b6e5;
+  --sidebar-primary-foreground: #08222d;
+  --sidebar-accent: #1e4858;
+  --sidebar-accent-foreground: #f8fbf2;
+  --sidebar-border: #285768;
+  --sidebar-ring: #39b6e5;
+}

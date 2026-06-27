@@ -1,0 +1,74 @@
+# 10 - Testes de Login e Isolamento
+
+Este documento descreve como validar login e isolamento sem misturar cadastro SaaS com administracao interna.
+
+## Regra de banco
+
+Codex nunca executa nada no banco. Scripts que acessam Supabase real devem ser rodados somente pelo usuario.
+
+## Migrations obrigatorias
+
+Rode no banco de teste, nesta ordem:
+
+1. `scripts/migrations/20260626_0001_multi_tenant_foundation.sql`
+2. `scripts/migrations/20260626_0002_tenant_cora_config.sql`
+3. `scripts/migrations/20260626_0003_account_signup_onboarding.sql`
+
+## Fluxos corretos
+
+| Fluxo | Rota | Finalidade |
+| --- | --- | --- |
+| Criar nova escolinha/tenant | `/criar-conta` | Cadastro publico SaaS com confirmacao de e-mail |
+| Confirmar e-mail | `/auth/confirm` | Callback Supabase que ativa tenant, perfil e membership |
+| Criar usuario dentro da conta | `/admin/usuarios` | Owner/admin adiciona admin, colaborador ou professora ao tenant atual |
+
+`/admin/usuarios` nao deve criar nova escolinha. Ele serve apenas para administracao interna da conta autenticada.
+
+## Teste manual de nova conta
+
+1. Rode a migration `0003`.
+2. Configure as variaveis de ambiente e Redirect URLs descritas em [11 - Criacao de conta SaaS](./11-criacao-conta-saas.md).
+3. Abra `/criar-conta`.
+4. Crie uma conta com e-mail real de teste.
+5. Confirme o e-mail pelo link recebido.
+6. Confirme que o callback redireciona para `/admin`.
+7. Crie um polo ou outro dado simples.
+8. Saia e entre com o tenant legado.
+9. Confirme que o dado da nova escolinha nao aparece no tenant legado.
+
+## Teste automatizado de isolamento
+
+Existe o script:
+
+```bash
+npm run test:tenant-isolation
+```
+
+Ele cria dados temporarios no Supabase real e deve ser executado somente pelo usuario, quando quiser validar RLS com banco de teste.
+
+O teste:
+
+- cria dois tenants temporarios;
+- cria um owner em cada tenant;
+- cria um polo em cada tenant;
+- autentica com anon key como cada owner;
+- valida que cada owner so enxerga seu proprio polo;
+- tenta inserir dado cross-tenant e espera bloqueio;
+- limpa os dados temporarios ao final.
+
+## Configurar Cora por tenant
+
+Depois de rodar a migration `0002`, abra:
+
+- `/admin/configuracoes`
+
+Para cada tenant, cadastre:
+
+- ambiente;
+- client id;
+- chave privada PEM;
+- certificado PEM;
+- URL de webhook;
+- status ativo/inativo.
+
+As chaves nao sao devolvidas para o navegador depois de salvas. A tela mostra apenas se cada segredo esta configurado.
