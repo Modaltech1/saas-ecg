@@ -35,7 +35,7 @@ export default async function UsuariosPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <MobileHeaderServer title="Usuarios" />
+      <MobileHeaderServer title="Acessos" />
       <UsuariosClient tenant={tenant} currentRole={role} usuarios={usuarios} />
     </div>
   )

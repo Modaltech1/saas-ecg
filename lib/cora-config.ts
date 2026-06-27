@@ -40,7 +40,7 @@ export function toCoraPublicConfig(config: TenantCoraConfig | null): TenantCoraP
 
 export function toCoraCredentials(config: TenantCoraConfig): CoraCredentials {
   if (!hasValue(config.client_id) || !hasValue(config.private_key_pem) || !hasValue(config.certificate_pem)) {
-    throw new Error("Credenciais Cora incompletas para este tenant.")
+    throw new Error("Credenciais Cora incompletas para esta conta.")
   }
 
   return {
@@ -70,7 +70,7 @@ export async function requireTenantCoraCredentials(db: AdminDb, tenantId: string
   const config = await getTenantCoraConfig(db, tenantId)
 
   if (!config || !config.ativo) {
-    throw new Error("Integracao Cora inativa para este tenant.")
+    throw new Error("Integracao Cora inativa para esta conta.")
   }
 
   return toCoraCredentials(config)

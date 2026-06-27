@@ -62,7 +62,7 @@ function getLegacyCredentials(): CoraCredentials {
   const certificate = process.env.CORA_CERTIFICATE
 
   if (!clientId || !privateKey || !certificate) {
-    throw new Error("Credenciais Cora incompletas para o tenant.")
+    throw new Error("Credenciais Cora incompletas para esta conta.")
   }
 
   return {
@@ -77,7 +77,7 @@ function resolveCredentials(credentials?: CoraCredentials): Required<CoraCredent
   const source = credentials ?? getLegacyCredentials()
 
   if (!source.clientId || !source.privateKey || !source.certificate) {
-    throw new Error("Credenciais Cora incompletas para o tenant.")
+    throw new Error("Credenciais Cora incompletas para esta conta.")
   }
 
   return {

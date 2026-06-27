@@ -4,7 +4,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { isValidAccountSlug, normalizarSlugConta } from "@/lib/account-onboarding"
 import { ensureSaasAccountActivated } from "@/lib/account-onboarding-server"
-import { requireTenantContext } from "@/lib/tenant"
+import { requireTenantContext, withTenant } from "@/lib/tenant"
 import { createClient, createAdminClient } from "@/lib/supabase/server"
 
 async function appOrigin() {
@@ -326,6 +326,89 @@ export async function criarUsuarioTenant(formData: FormData) {
   if (erroMembership) return { erro: erroMembership.message }
 
   return { sucesso: true, id: novoUser.user.id }
+}
+
+export async function atualizarConta(formData: FormData) {
+  let ctx
+  try {
+    ctx = await requireTenantContext(["owner", "admin"])
+  } catch {
+    return { erro: "Sem permissao para atualizar esta conta." }
+  }
+
+  const nome = (formData.get("nome") as string).trim()
+  const responsavel = ((formData.get("responsavel") as string) ?? "").trim()
+  const emailContato = ((formData.get("email_contato") as string) ?? "").trim().toLowerCase()
+  const telefone = ((formData.get("telefone") as string) ?? "").trim()
+  const whatsapp = ((formData.get("whatsapp") as string) ?? "").trim()
+  const documento = ((formData.get("documento") as string) ?? "").trim()
+  const site = ((formData.get("site") as string) ?? "").trim()
+  const endereco = ((formData.get("endereco") as string) ?? "").trim()
+  const cidade = ((formData.get("cidade") as string) ?? "").trim()
+  const estado = ((formData.get("estado") as string) ?? "").trim().toUpperCase()
+
+  if (!nome) {
+    return { erro: "Informe o nome da conta." }
+  }
+
+  if (emailContato && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailContato)) {
+    return { erro: "Informe um e-mail de contato valido." }
+  }
+
+  if (estado && estado.length !== 2) {
+    return { erro: "Use a sigla do estado com 2 letras." }
+  }
+
+  const { data: tenantAtual, error: tenantReadError } = await ctx.db
+    .from("tenants")
+    .select("metadata")
+    .eq("id", ctx.tenantId)
+    .maybeSingle()
+
+  if (tenantReadError) {
+    return { erro: tenantReadError.message }
+  }
+
+  const currentMetadata =
+    tenantAtual && typeof tenantAtual.metadata === "object" && tenantAtual.metadata !== null
+      ? tenantAtual.metadata as Record<string, unknown>
+      : {}
+
+  const metadata = {
+    ...currentMetadata,
+    responsavel,
+    email_contato: emailContato,
+    telefone,
+    whatsapp,
+    documento,
+    site,
+    endereco,
+    cidade,
+    estado,
+  }
+
+  const now = new Date().toISOString()
+
+  const { error: tenantError } = await ctx.db
+    .from("tenants")
+    .update({
+      nome,
+      metadata,
+      atualizado_em: now,
+    })
+    .eq("id", ctx.tenantId)
+
+  if (tenantError) return { erro: tenantError.message }
+
+  const { error: configError } = await ctx.db
+    .from("configuracoes")
+    .upsert(withTenant({ id: 1, whatsapp_admin: whatsapp, atualizado_em: now }, ctx.tenantId), {
+      onConflict: "tenant_id,id",
+    })
+
+  if (configError) return { erro: configError.message }
+
+  return { sucesso: true }
 }
 
 export async function atualizarProfessora(formData: FormData) {

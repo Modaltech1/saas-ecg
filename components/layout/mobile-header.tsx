@@ -6,6 +6,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   AlertCircle,
+  Building2,
   CalendarDays,
   CreditCard,
   DollarSign,
@@ -59,7 +60,8 @@ const adminMenuItems: NavigationItem[] = [
   { label: "Cobrancas", href: "/admin/cobrancas", group: "Financeiro", icon: AlertCircle },
   { label: "Produtos", href: "/admin/produtos", group: "Loja", icon: ShoppingBag },
   { label: "Eventos", href: "/admin/eventos", group: "Loja", icon: CalendarDays },
-  { label: "Usuarios", href: "/admin/usuarios", group: "Sistema", icon: UserCog },
+  { label: "Conta", href: "/admin/conta", group: "Sistema", icon: Building2 },
+  { label: "Acessos", href: "/admin/usuarios", group: "Sistema", icon: UserCog },
   { label: "Configuracoes", href: "/admin/configuracoes", group: "Sistema", icon: Settings },
 ]
 

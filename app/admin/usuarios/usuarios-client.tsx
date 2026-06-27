@@ -31,6 +31,13 @@ type Tenant = {
   status: string
 }
 
+const roleLabel: Record<string, string> = {
+  owner: "Proprietario",
+  admin: "Administrador",
+  colaborador: "Colaborador",
+  professora: "Professora",
+}
+
 export function UsuariosClient({
   tenant,
   currentRole,
@@ -55,18 +62,18 @@ export function UsuariosClient({
         setErro(result.erro)
         return
       }
-      setSucesso("Usuario criado no tenant atual.")
+      setSucesso("Usuario criado na conta atual.")
       router.refresh()
     })
   }
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
-      <PageHeader title="Usuarios e tenants" description={`Tenant atual: ${tenant.nome} (${tenant.slug})`} />
+      <PageHeader title="Acessos" description={`Conta: ${tenant.nome} (${tenant.slug})`} />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <MetricCard title="Usuarios" value={usuarios.length} icon={Users} />
-        <MetricCard title="Admins" value={usuarios.filter((u) => ["owner", "admin", "colaborador"].includes(u.role)).length} icon={ShieldCheck} />
+        <MetricCard title="Administradores" value={usuarios.filter((u) => ["owner", "admin", "colaborador"].includes(u.role)).length} icon={ShieldCheck} />
         <MetricCard title="Professoras" value={usuarios.filter((u) => u.role === "professora").length} icon={UserCog} />
       </div>
 
@@ -95,11 +102,11 @@ export function UsuariosClient({
                       <p className="text-sm text-muted-foreground">{usuario.perfil?.email ?? "sem e-mail no perfil"}</p>
                     </div>
                     <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                      {usuario.role}
+                      {roleLabel[usuario.role] ?? usuario.role}
                     </span>
                   </div>
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Status: {usuario.status} · Perfil {usuario.perfil?.ativo ? "ativo" : "inativo"}
+                    Status: {usuario.status} - Perfil {usuario.perfil?.ativo ? "ativo" : "inativo"}
                   </p>
                 </div>
               ))
@@ -125,10 +132,10 @@ export function UsuariosClient({
                 <option value="professora">Professora</option>
               </select>
               <Button type="submit" disabled={isPending || !canCreateUser} className="w-full">
-                Criar no tenant atual
+                Criar na conta atual
               </Button>
               {!canCreateUser ? (
-                <p className="text-xs text-muted-foreground">Apenas owner ou admin podem criar usuarios nesta conta.</p>
+                <p className="text-xs text-muted-foreground">Apenas proprietarios ou administradores podem criar usuarios nesta conta.</p>
               ) : null}
             </form>
           </CardContent>

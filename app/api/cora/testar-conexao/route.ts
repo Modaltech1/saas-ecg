@@ -11,7 +11,7 @@ export async function POST() {
     const config = await getTenantCoraConfig(db, tenantId)
 
     if (!config) {
-      return NextResponse.json({ ok: false, erro: "Configuracao Cora nao encontrada para este tenant." }, { status: 400 })
+      return NextResponse.json({ ok: false, erro: "Configuracao Cora nao encontrada para esta conta." }, { status: 400 })
     }
 
     const resultado = await testarConexaoCora(toCoraCredentials(config))

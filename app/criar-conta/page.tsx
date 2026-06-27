@@ -67,16 +67,16 @@ export default function CriarContaPage() {
   }
 
   return (
-    <AuthCard title="Criar conta" description="Crie a conta da sua escolinha. O acesso fica ativo depois da confirmacao por e-mail.">
+    <AuthCard title="Criar conta" description="Crie a conta da sua instituicao. O acesso fica ativo depois da confirmacao por e-mail.">
       <form action={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome_escolinha">Nome da escolinha</Label>
+          <Label htmlFor="nome_escolinha">Nome da instituicao</Label>
           <Input
             id="nome_escolinha"
             name="nome_escolinha"
             value={nomeEscolinha}
             onChange={(event) => setNomeEscolinha(event.target.value)}
-            placeholder="Ex.: Escola Movimento"
+            placeholder="Ex.: Instituto Movimento"
             required
             disabled={isPending}
           />
@@ -104,7 +104,7 @@ export default function CriarContaPage() {
 
         <div className="space-y-2">
           <Label htmlFor="email">E-mail</Label>
-          <Input id="email" name="email" type="email" placeholder="voce@escolinha.com" required disabled={isPending} />
+          <Input id="email" name="email" type="email" placeholder="voce@instituicao.com" required disabled={isPending} />
         </div>
 
         <div className="space-y-2">

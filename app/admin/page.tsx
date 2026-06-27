@@ -4,6 +4,7 @@ import Link from "next/link"
 import useSWR from "swr"
 import {
   AlertCircle,
+  Building2,
   CalendarDays,
   DollarSign,
   GraduationCap,
@@ -36,8 +37,9 @@ const quickLinks = [
   { label: "Cobrancas", href: "/admin/cobrancas", icon: AlertCircle, description: "Pendencias" },
   { label: "Produtos", href: "/admin/produtos", icon: ShoppingBag, description: "Vitrine e loja" },
   { label: "Eventos", href: "/admin/eventos", icon: CalendarDays, description: "Inscricoes" },
-  { label: "Usuarios", href: "/admin/usuarios", icon: UserCog, description: "Acessos" },
-  { label: "Configuracoes", href: "/admin/configuracoes", icon: Settings, description: "Sistema" },
+  { label: "Conta", href: "/admin/conta", icon: Building2, description: "Dados e seguranca" },
+  { label: "Acessos", href: "/admin/usuarios", icon: UserCog, description: "Usuarios" },
+  { label: "Configuracoes", href: "/admin/configuracoes", icon: Settings, description: "Integracoes" },
 ]
 
 export default function AdminDashboard() {
@@ -52,10 +54,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <MobileHeader title="Dashboard Admin" />
+      <MobileHeader title="Painel administrativo" />
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
-        <PageHeader title="Dashboard Admin" description="Visao geral operacional e financeira do sistema." />
+        <PageHeader title="Painel administrativo" description="Visao geral operacional e financeira da conta." />
 
         {isLoading ? (
           <Card>
@@ -122,12 +124,12 @@ export default function AdminDashboard() {
                 <div className="rounded-lg bg-muted/50 p-4">
                   <AlertCircle className="mb-3 size-5 text-[color:var(--warning)]" />
                   <p className="font-semibold">Risco financeiro</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Pendencias e cobrancas devem virar indicadores auditaveis por tenant.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Pendencias e cobrancas devem virar indicadores auditaveis por conta.</p>
                 </div>
                 <div className="rounded-lg bg-muted/50 p-4">
                   <Settings className="mb-3 size-5 text-muted-foreground" />
                   <p className="font-semibold">Configuracao</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Branding, planos e permissoes entram como proximas camadas de produto.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Dados da conta, planos e permissoes entram como proximas camadas de produto.</p>
                 </div>
               </div>
             </Section>
