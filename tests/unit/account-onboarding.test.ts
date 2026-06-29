@@ -45,7 +45,7 @@ describe("authConfirmErrorPath", () => {
     expect(authConfirmErrorPath("/redefinir-senha")).toBe("/recuperar-senha?erro=link-invalido")
   })
 
-  it("routes signup confirmation failures back to login", () => {
-    expect(authConfirmErrorPath("/admin")).toBe("/login?erro=confirmacao-email")
+  it("routes signup confirmation failures to a friendly confirmation page", () => {
+    expect(authConfirmErrorPath("/admin")).toBe("/confirmacao-email?erro=link-invalido")
   })
 })

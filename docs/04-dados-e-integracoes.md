@@ -75,6 +75,42 @@ Regra: toda mudanca futura de banco deve entrar como nova migration em `scripts/
 | `configuracoes` | Configuracoes do sistema |
 | `tenant_cora_configuracoes` | Credenciais, ambiente, webhook e status da integracao Cora por tenant |
 
+### Branding por instituicao
+
+Requisito registrado em 2026-06-29: cada instituicao deve configurar logo e cores para uso no app, links publicos e PWA.
+
+Campos/entidades a modelar em migration futura:
+
+- logo principal;
+- logo quadrada/icone;
+- favicon/PWA icon;
+- cor primaria;
+- cor secundaria/acento;
+- cor de superficie/fundo, se necessario;
+- data de atualizacao do branding;
+- origem/armazenamento do asset, preferencialmente Supabase Storage ou storage equivalente;
+- fallback para branding padrao quando nao configurado.
+
+Pontos tecnicos:
+
+- `tenants.metadata` pode sustentar prototipo inicial, mas a V1 deve avaliar tabela propria, por exemplo `tenant_branding`, para validacao, auditoria e cache;
+- imagens devem ter validacao de tamanho, formato e dimensao;
+- cores devem ter validacao de formato e contraste;
+- manifest/PWA dinamico por instituicao depende de como resolveremos dominio, subdominio ou slug publico;
+- paginas publicas devem resolver branding por instituicao sem expor dados de outra instituicao;
+- Codex cria migrations e codigo quando chegar esta fase, mas nunca executa alteracoes no banco.
+
+### Status de instituicao
+
+| `tenants.status` | Comportamento esperado |
+| --- | --- |
+| `pendente_confirmacao` | Usuario e enviado para `/conta-pendente` ate confirmar e-mail |
+| `ativo` | Acesso normal, respeitando role e onboarding |
+| `suspenso` | Usuario e enviado para `/conta-suspensa?status=suspenso` |
+| `cancelado` | Usuario e enviado para `/conta-suspensa?status=cancelado` |
+
+O onboarding inicial nao exigiu migration nova. Ele usa `tenants.metadata.onboarding_inicial_concluido_em` e `tenants.metadata.onboarding_objetivos`.
+
 ## Relacionamentos principais
 
 ```mermaid
@@ -146,6 +182,27 @@ Decisao importante: service role bypassa RLS. Por isso as rotas que usam admin c
 
 O codigo atual tambem faz verificacao de PIX pela pagina `/pagamentos` e pelo webhook `/api/cora/webhook`.
 
+## EventBridge e Lambdas financeiras
+
+Estado informado em 2026-06-29: existem quatro funcoes externas, hoje executadas por AWS Lambda/EventBridge, que precisam ser revisadas antes da V1 SaaS.
+
+| Rotina | Objetivo atual | Decisao SaaS |
+| --- | --- | --- |
+| Geracao de mensalidades | Cria mensalidades do mes para cada aluna com base na turma e no desconto individual | Deve executar por instituicao, respeitando o dia de lancamento configurado pela propria instituicao |
+| Acrescimo por atraso | Le mensalidades pendentes e acrescenta a taxa da turma quando a aluna nao paga ate o dia configurado | Deve executar por instituicao, respeitando o dia de acrescimo/taxa configurado pela instituicao e mantendo idempotencia por pagamento |
+| Levantamento de pagamentos/custos | Levanta pagamentos a fazer no mes, incluindo professoras, alugueis, parcerias e custos de turma | Deve executar por instituicao, respeitando o dia de fechamento/levantamento configurado pela instituicao |
+| Conciliacao Cora | Verifica pagamentos pendentes na Cora e marca como concluido quando pago | Deve executar de forma recorrente, isolada por instituicao e credenciais Cora, sem chamar Cora real em testes automatizados |
+
+Requisitos para a evolucao SaaS:
+
+- cada instituicao deve ter configuracao propria dos dias de execucao financeira;
+- os jobs precisam filtrar explicitamente `tenant_id`;
+- cada rotina deve ser idempotente por instituicao, competencia, entidade e tipo de execucao;
+- cada execucao deve gerar log/auditoria por instituicao;
+- falhas devem ter retries, dead-letter ou trilha equivalente;
+- os testes automatizados devem usar mocks/fixtures, nunca Cora real;
+- Codex pode criar migrations e codigo, mas nunca executar Lambda, EventBridge, SQL ou rotinas live contra banco.
+
 ## Integracoes
 
 ### Supabase
@@ -166,6 +223,8 @@ Uso atual:
 - Confirmacao de e-mail para `/criar-conta` usando callback `/auth/confirm`.
 - Reenvio de confirmacao e recuperacao/redefinicao de senha usando Supabase Auth e o mesmo callback `/auth/confirm`.
 - Troca de senha logada em `/admin/conta`, validando a senha atual antes de atualizar.
+- Estados amigaveis para confirmacao invalida, instituicao pendente, suspensa ou cancelada.
+- Onboarding inicial apos primeira entrada administrativa usando `tenants.metadata`.
 
 Configuracao externa obrigatoria no Supabase Auth:
 

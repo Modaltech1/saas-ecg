@@ -12,6 +12,7 @@ Legenda:
 - [ ] Uma instituicao consegue criar uma conta.
 - [ ] Uma instituicao consegue confirmar e-mail.
 - [ ] Uma instituicao consegue configurar dados essenciais.
+- [ ] Uma instituicao consegue configurar logo e cores basicas usadas no app, paginas publicas e PWA.
 - [ ] Uma instituicao consegue cadastrar sua operacao.
 - [ ] Uma instituicao consegue receber pre-matriculas.
 - [ ] Uma instituicao consegue gerenciar alunas, turmas, professoras, chamadas e financeiro.
@@ -40,11 +41,12 @@ Legenda:
 - [ ] Regra financeira precisa de teste.
 - [ ] Fluxo publico precisa de validacao rigorosa.
 - [x] Layout deve reutilizar componentes compartilhados antes de criar UI nova.
+- [ ] Branding basico por instituicao e parte da V1: logo, cores principais e PWA devem ter fallback seguro e validacao visual.
 - [ ] Primeiro estabilizar o monolito modular; extrair backend separado so quando houver ganho real.
 - [x] Stripe e Cora sao integracoes diferentes.
 - [x] Stripe cobra a assinatura do SaaS.
 - [x] Cora cobra mensalidades/matriculas das alunas da instituicao.
-- [x] UI deve falar "Conta", "Instituicao", "Acessos", "Configuracoes"; `tenant` fica em codigo/banco/docs tecnicos.
+- [x] UI principal deve falar "Instituicao"; "Conta" fica para contexto de acesso, plano, credenciais e codigo/banco/docs tecnicos.
 
 ## Fase 0 - Governanca Administrada pelo Usuario
 
@@ -72,7 +74,7 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] Validar login apos confirmacao.
 - [x] Validar `perfis`, `tenants`, `tenant_memberships` e `tenant_account_signups`.
 - [x] Corrigir fluxo em que usuario existia no Auth, mas `perfis` ficava vazio.
-- [x] Criar tela de Conta.
+- [x] Criar tela de Instituicao.
 - [x] Permitir editar nome da conta.
 - [x] Permitir editar responsavel principal.
 - [x] Permitir editar e-mail de contato.
@@ -82,12 +84,12 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] Permitir editar site.
 - [x] Permitir editar endereco, cidade e estado.
 - [x] Sincronizar WhatsApp da conta com `configuracoes.whatsapp_admin`.
-- [x] Criar bloco de seguranca e acessos na tela de Conta.
-- [x] Adicionar link de Conta no menu administrativo.
-- [x] Adicionar Conta no acesso rapido do painel.
+- [x] Criar bloco de seguranca e acessos na tela de Instituicao.
+- [x] Adicionar link de Instituicao no menu administrativo.
+- [x] Adicionar Instituicao no acesso rapido do painel.
 - [x] Trocar linguagem visivel de "tenant" para "conta".
 - [x] Trocar comunicacao publica de "escolinha" para "instituicao".
-- [x] Ajustar `/admin/usuarios` para linguagem de produto: "Acessos" e "Conta".
+- [x] Ajustar `/admin/usuarios` para linguagem de produto: "Acessos" e "Instituicao".
 
 ### Pendente
 
@@ -95,12 +97,12 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] Criar fluxo de recuperar senha.
 - [x] Criar fluxo de redefinir senha.
 - [x] Criar fluxo de troca de senha logado.
-- [ ] Criar pagina amigavel para link de confirmacao invalido/expirado.
-- [ ] Revisar middleware/proxy para suportar conta suspensa/cancelada.
-- [ ] Criar tela/estado visual de conta pendente.
-- [ ] Criar tela/estado visual de conta suspensa.
-- [ ] Criar onboarding inicial apos primeira entrada.
-- [ ] Definir se "Conta" ou "Instituicao" sera o termo principal em toda a UI.
+- [x] Criar pagina amigavel para link de confirmacao invalido/expirado.
+- [x] Revisar middleware/proxy para suportar conta suspensa/cancelada.
+- [x] Criar tela/estado visual de conta pendente.
+- [x] Criar tela/estado visual de conta suspensa.
+- [x] Criar onboarding inicial apos primeira entrada.
+- [x] Definir se "Conta" ou "Instituicao" sera o termo principal em toda a UI.
 
 ### Paginas da fase
 
@@ -111,8 +113,10 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] `/reenviar-confirmacao`
 - [x] `/recuperar-senha`
 - [x] `/redefinir-senha`
-- [ ] `/confirmacao-email`
-- [ ] `/admin/onboarding`
+- [x] `/confirmacao-email`
+- [x] `/conta-pendente`
+- [x] `/conta-suspensa`
+- [x] `/admin/onboarding`
 
 ### Criterio de pronto
 
@@ -120,9 +124,9 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] Usuario sem perfil e corrigido ou bloqueado com erro claro.
 - [x] Admin cria usuarios internos sem criar novas contas.
 - [x] Conta possui tela de dados institucionais.
-- [ ] Conta inativa nao acessa admin.
+- [x] Conta inativa nao acessa admin.
 - [x] Fluxos de senha estao prontos.
-- [ ] Onboarding inicial esta pronto.
+- [x] Onboarding inicial esta pronto.
 
 ## Fase 2 - Arquitetura de Codigo e Contratos de Dominio
 
@@ -185,6 +189,14 @@ Objetivo: consolidar uma experiencia SaaS consistente, mobile first e reaproveit
 - [ ] Criar loading states.
 - [ ] Revisar mobile de formularios longos.
 - [ ] Remover vestigios visuais antigos.
+- [ ] Criar arquitetura de branding por instituicao com fallback Prodexy/padrao.
+- [ ] Permitir logo da instituicao no app autenticado.
+- [ ] Permitir logo da instituicao nas paginas publicas: pre-matricula, pagamentos, produtos e eventos.
+- [ ] Permitir logo/icone da instituicao no manifesto/PWA quando tecnicamente viavel por dominio/subdominio.
+- [ ] Permitir cores basicas por instituicao: primaria, secundaria/acento e tema de superficie.
+- [ ] Validar contraste minimo das cores configuradas.
+- [ ] Criar preview de branding antes de salvar.
+- [ ] Garantir que o design system consuma tokens dinamicos por instituicao sem duplicar CSS por pagina.
 
 ## Fase 4 - Banco, RLS e Modelo de Dados V1
 
@@ -209,6 +221,8 @@ Migrations provaveis:
 - [ ] Ajustes de status de conta.
 - [ ] Ajustes de billing Stripe.
 - [ ] Ajustes de convites.
+- [ ] Configuracao de branding por instituicao: logo, favicon/PWA e cores.
+- [ ] Configuracao de agendas financeiras por instituicao.
 - [ ] Remocao de defaults legados.
 - [ ] Indices de performance.
 
@@ -260,7 +274,7 @@ Variaveis esperadas:
 
 ## Fase 6 - Cora por Conta e Financeiro da Instituicao
 
-Objetivo: estabilizar a cobranca das alunas sem risco de usar credencial global.
+Objetivo: estabilizar a cobranca das alunas, as rotinas financeiras automatizadas e a integracao Cora sem risco de usar credencial global.
 
 - [x] Criar tabela `tenant_cora_configuracoes`.
 - [x] Tela de configuracoes salva Cora por conta.
@@ -273,6 +287,19 @@ Objetivo: estabilizar a cobranca das alunas sem risco de usar credencial global.
 - [ ] Criar teste de cancelamento de cobranca com mock.
 - [ ] Revisar webhook Cora com conta.
 - [ ] Revisar cron de verificacao PIX por conta.
+- [ ] Mapear Lambdas/EventBridge atuais e documentar entrada, saida, agenda, idempotencia e dependencia de banco/API.
+- [ ] Revisar Lambda de geracao mensal de mensalidades por aluna com base em turma, desconto e instituicao.
+- [ ] Revisar Lambda de acrescimo/taxa por atraso conforme configuracao da turma e dia configurado pela instituicao.
+- [ ] Revisar Lambda de levantamento mensal de pagamentos/custos a pagar: professoras, alugueis, parcerias e custos de turma.
+- [ ] Revisar Lambda de verificacao recorrente de pagamentos pendentes na Cora.
+- [ ] Criar configuracao por instituicao para dia de lancamento de mensalidades.
+- [ ] Criar configuracao por instituicao para dia de acrescimo/taxa por atraso.
+- [ ] Criar configuracao por instituicao para dia de levantamento de pagamentos/custos.
+- [ ] Definir frequencia global segura para conciliacao Cora e isolamento por instituicao.
+- [ ] Garantir que jobs financeiros sejam idempotentes por instituicao, mes/referencia e tipo de rotina.
+- [ ] Garantir logs e auditoria por instituicao em cada execucao financeira automatizada.
+- [ ] Criar estrategia de retries, dead-letter e alertas para Lambdas/EventBridge.
+- [ ] Criar testes com fixtures para jobs financeiros sem chamar Cora real.
 - [ ] Criar log de eventos Cora.
 - [ ] Criar tela de status da integracao.
 - [ ] Criar checklist para credenciais Cora por instituicao.
@@ -358,11 +385,15 @@ Objetivo: reduzir risco antes de clientes reais.
 - [x] Profissionalizar linguagem de conta/acessos.
 - [x] Recuperar senha.
 - [x] Reenvio de confirmacao.
+- [x] Estados de conta pendente/suspensa/cancelada.
+- [x] Onboarding pos-criacao.
 - [ ] Docs de ambiente/Vercel.
 
 ### Sprint 2 - Layout e Onboarding
 
-- [ ] Onboarding pos-criacao.
+- [x] Onboarding pos-criacao.
+- [ ] Branding basico por instituicao: logo e cores.
+- [ ] Branding aplicado a links publicos e PWA.
 - [ ] Refatorar auth/public pages restantes.
 - [ ] Revisar admin shell/telas com maior divergencia.
 - [ ] Criar componentes compartilhados faltantes.
@@ -387,6 +418,9 @@ Objetivo: reduzir risco antes de clientes reais.
 
 ### Sprint 5 - Financeiro e Cora
 
+- [ ] Inventariar EventBridge/Lambdas existentes.
+- [ ] Configurar agendas financeiras por instituicao.
+- [ ] Refatorar jobs financeiros para isolamento por instituicao.
 - [ ] Mocks Cora.
 - [ ] Webhook Cora por conta.
 - [ ] Cron por conta.
@@ -420,15 +454,18 @@ Publicas/auth:
 - [x] `/reenviar-confirmacao`
 - [x] `/recuperar-senha`
 - [x] `/redefinir-senha`
-- [ ] `/confirmacao-email`
+- [x] `/confirmacao-email`
+- [x] `/conta-pendente`
+- [x] `/conta-suspensa`
 - [ ] `/termos`
 - [ ] `/privacidade`
 
 Admin SaaS:
 
-- [ ] `/admin/onboarding`
+- [x] `/admin/onboarding`
 - [x] `/admin/conta`
 - [x] `/admin/usuarios`
+- [ ] `/admin/branding`
 - [ ] `/admin/plano`
 - [x] `/admin/configuracoes`
 - [ ] `/admin/suporte`
@@ -463,13 +500,14 @@ Publicas da instituicao:
 ## Decisoes Pendentes
 
 - [ ] Nome final do produto.
-- [ ] Termo principal da UI: "Conta", "Instituicao" ou outro.
+- [x] Termo principal da UI: "Instituicao".
 - [ ] Planos Stripe e limites de cada plano.
 - [ ] Trial gratuito: sim ou nao; quantos dias.
 - [ ] Bloqueio por inadimplencia: bloquear total ou modo leitura.
 - [ ] Cora em producao: PEMs no banco temporariamente ou Vault/KMS antes da V1.
 - [ ] Usuario pode pertencer a mais de uma instituicao ja na V1?
 - [ ] Subdominio por cliente entra na V1 ou fica para depois?
+- [ ] Branding por subdominio/dominio: gerar manifest dinamico por instituicao ou manter manifest unico ate V1.1?
 - [ ] WhatsApp manual permanece ou teremos API oficial depois?
 - [ ] Eventos/produtos precisam de checkout na V1 ou ficam como vitrine/inscricao simples.
 - [ ] Painel interno Prodexy entra na V1 ou V1.1.
@@ -480,6 +518,7 @@ Publicas da instituicao:
 - [ ] Service role sem filtro de conta.
 - [ ] Stripe/Cora confundidos.
 - [ ] UI duplicada.
+- [ ] Branding por instituicao quebrar contraste, PWA ou cache de assets.
 - [ ] Regras financeiras sem teste.
 - [ ] Onboarding quebrado.
 - [ ] Falta observabilidade.
@@ -492,6 +531,7 @@ A V1 so deve ser considerada pronta quando:
 - [ ] Assinatura Stripe funciona em modo teste e depois producao.
 - [ ] Conta ativa opera sem acessar dados de outra conta.
 - [ ] Admin configura conta e usuarios.
+- [ ] Instituicao configura logo e cores com fallback seguro.
 - [ ] Modulos centrais funcionam no mobile.
 - [ ] Cora por conta esta isolada ou explicitamente desativada por conta.
 - [ ] Rotas publicas estao validadas.

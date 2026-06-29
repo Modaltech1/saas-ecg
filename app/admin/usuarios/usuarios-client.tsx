@@ -62,14 +62,14 @@ export function UsuariosClient({
         setErro(result.erro)
         return
       }
-      setSucesso("Usuario criado na conta atual.")
+      setSucesso("Usuario criado nesta instituicao.")
       router.refresh()
     })
   }
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
-      <PageHeader title="Acessos" description={`Conta: ${tenant.nome} (${tenant.slug})`} />
+      <PageHeader title="Acessos" description={`Instituicao: ${tenant.nome} (${tenant.slug})`} />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <MetricCard title="Usuarios" value={usuarios.length} icon={Users} />
@@ -132,10 +132,10 @@ export function UsuariosClient({
                 <option value="professora">Professora</option>
               </select>
               <Button type="submit" disabled={isPending || !canCreateUser} className="w-full">
-                Criar na conta atual
+                Criar nesta instituicao
               </Button>
               {!canCreateUser ? (
-                <p className="text-xs text-muted-foreground">Apenas proprietarios ou administradores podem criar usuarios nesta conta.</p>
+                <p className="text-xs text-muted-foreground">Apenas proprietarios ou administradores podem criar usuarios nesta instituicao.</p>
               ) : null}
             </form>
           </CardContent>

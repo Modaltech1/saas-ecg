@@ -51,7 +51,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
         return
       }
 
-      setSucesso("Dados da conta atualizados.")
+      setSucesso("Dados da instituicao atualizados.")
       router.refresh()
     })
   }
@@ -74,7 +74,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
 
   return (
     <>
-      <PageHeader title="Conta" description="Dados institucionais, contato e seguranca da sua conta." />
+      <PageHeader title="Instituicao" description="Dados institucionais, contato e seguranca do acesso." />
 
       {(erro || sucesso) ? (
         <div className={`rounded-lg border px-4 py-3 text-sm ${
@@ -89,7 +89,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="size-5 text-primary" />
-              Dados da conta
+              Dados da instituicao
             </CardTitle>
             <CardDescription>
               Essas informacoes aparecem em contatos, paginas publicas e operacao interna.
@@ -99,7 +99,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
             <form action={handleSubmit} className="space-y-5">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="nome">Nome da conta</Label>
+                  <Label htmlFor="nome">Nome da instituicao</Label>
                   <Input id="nome" name="nome" defaultValue={initialData.nome} required disabled={isPending} />
                 </div>
 
@@ -156,7 +156,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
 
               <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
                 {isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-                Salvar dados da conta
+                Salvar dados da instituicao
               </Button>
             </form>
           </CardContent>
@@ -170,7 +170,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
                 Seguranca
               </CardTitle>
               <CardDescription>
-                Controles essenciais de acesso e protecao da conta.
+                Controles essenciais de acesso e protecao da instituicao.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -180,7 +180,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
                   <div>
                     <p className="font-semibold">Confirmacao de e-mail</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Novas contas precisam confirmar e-mail antes do acesso administrativo.
+                      Novas instituicoes precisam confirmar e-mail antes do acesso administrativo.
                     </p>
                   </div>
                 </div>
@@ -280,7 +280,7 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
             <CardHeader>
               <CardTitle>Identificacao</CardTitle>
               <CardDescription>
-                O identificador publico ajuda a resolver links e paginas publicas da conta.
+                O identificador publico ajuda a resolver links e paginas publicas da instituicao.
               </CardDescription>
             </CardHeader>
             <CardContent>

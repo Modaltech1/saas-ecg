@@ -131,10 +131,12 @@ Pendencia tecnica deliberada:
 
 Estado atual:
 
-- `/criar-conta` cria uma nova escolinha/tenant como `pendente_confirmacao`;
+- `/criar-conta` cria uma nova instituicao/tenant como `pendente_confirmacao`;
 - Supabase Auth envia confirmacao de e-mail;
 - `/auth/confirm` ativa tenant, perfil e membership somente apos token confirmado;
 - `/admin/usuarios` fica restrito a usuarios internos do tenant atual.
+- `/conta-pendente`, `/conta-suspensa` e `/confirmacao-email` mostram estados amigaveis para acesso pendente, suspenso/cancelado e link invalido.
+- `/admin/onboarding` conduz a primeira entrada da instituicao e grava conclusao em `tenants.metadata`.
 
 Implementado nesta fase:
 

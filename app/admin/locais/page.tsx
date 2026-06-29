@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import useSWR from "swr"
-import { Building2, Edit, GraduationCap, Loader2, MapPin, Plus, Trash2 } from "lucide-react"
+import { Building2, Edit, GraduationCap, Loader2, MapPin, MapPinned, Plus, Trash2 } from "lucide-react"
 import { MobileHeader } from "@/components/layout/mobile-header"
 import { FilterInput } from "@/components/shared/filters"
 import { MetricCard } from "@/components/shared/metric-card"
@@ -134,7 +134,7 @@ export default function LocaisPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard title="Locais cadastrados" value={locais.length} icon={Building2} tone="blue" />
-          <MetricCard title="Polos com locais" value={new Set(locais.map((local) => local.polo_id)).size} icon={MapPin} />
+          <MetricCard title="Polos com locais" value={new Set(locais.map((local) => local.polo_id)).size} icon={MapPinned} />
           <MetricCard title="Resultado filtrado" value={filtered.length} icon={GraduationCap} />
           <MetricCard title="Sem endereco" value={locais.filter((local) => !local.endereco).length} icon={Building2} tone="warning" />
         </div>

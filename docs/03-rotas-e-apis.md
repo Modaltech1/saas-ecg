@@ -12,6 +12,9 @@ Inventario das rotas observadas no projeto.
 | `/reenviar-confirmacao` | Publico/Auth | Reenvio de confirmacao de e-mail |
 | `/recuperar-senha` | Publico/Auth | Solicita link de recuperacao de senha |
 | `/redefinir-senha` | Publico/Auth | Define nova senha apos link de recuperacao |
+| `/confirmacao-email` | Publico/Auth | Estado amigavel para link de confirmacao invalido ou expirado |
+| `/conta-pendente` | Publico/Auth | Estado visual para instituicao aguardando confirmacao de e-mail |
+| `/conta-suspensa` | Publico/Auth | Estado visual para instituicao suspensa ou cancelada |
 | `/cadastro` | Publico | Pre-matricula externa |
 | `/pagamentos` | Publico | Consulta de pagamentos por CPF e geracao de PIX |
 | `/produtos` | Publico | Vitrine publica de produtos |
@@ -33,7 +36,8 @@ Inventario das rotas observadas no projeto.
 | `/admin/eventos` | Admin | CRUD de eventos |
 | `/admin/eventos/{id}` | Admin | Detalhe e inscricoes do evento |
 | `/admin/configuracoes` | Admin | Cora, webhook e contato |
-| `/admin/conta` | Admin | Dados da conta, seguranca e troca de senha |
+| `/admin/conta` | Admin | Dados da instituicao, seguranca e troca de senha |
+| `/admin/onboarding` | Admin | Primeira entrada guiada da instituicao |
 | `/professora` | Professora | Dashboard professora |
 | `/professora/turmas` | Professora | Turmas vinculadas |
 | `/professora/turmas/{id}` | Professora | Detalhe de turma da professora |
@@ -81,7 +85,7 @@ Inventario das rotas observadas no projeto.
 | `/api/cora/criar-pix` | POST | Cria invoice PIX na Cora | alunas, pagamentos_mensalidade, pagamentos_matricula, Cora |
 | `/api/cora/webhook` | POST | Recebe eventos da Cora | pagamentos_mensalidade, pagamentos_matricula, alunas |
 | `/api/cora/testar-conexao` | POST | Testa credenciais mTLS Cora | Cora |
-| `/auth/confirm` | GET | Callback de confirmacao de e-mail Supabase e ativacao de nova conta SaaS | auth.users, tenants, perfis, tenant_memberships, tenant_account_signups |
+| `/auth/confirm` | GET | Callback de confirmacao de e-mail e recuperacao de senha Supabase; redireciona links invalidos para paginas amigaveis | auth.users, tenants, perfis, tenant_memberships, tenant_account_signups |
 
 ## Observacoes de roteamento
 
@@ -92,4 +96,4 @@ Inventario das rotas observadas no projeto.
 - Service role continua permitido apenas em rotas server-side, mas agora deve sempre vir acompanhado de filtro explicito por `tenant_id`.
 - Rotas Cora foram tenantizadas em 2026-06-26 e agora buscam credenciais em `tenant_cora_configuracoes`.
 - Testes automatizados continuam sem chamar a API externa da Cora; quando a fase de integracao financeira avancar, os testes devem usar mocks/fixtures e ambiente sandbox controlado.
-- `/admin/usuarios` e apenas gestao de usuarios dentro do tenant atual. Criacao de nova escolinha/tenant deve passar por `/criar-conta`.
+- `/admin/usuarios` e apenas gestao de usuarios dentro do tenant atual. Criacao de nova instituicao deve passar por `/criar-conta`.

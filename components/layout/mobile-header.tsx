@@ -14,6 +14,7 @@ import {
   LayoutDashboard,
   LogOut,
   MapPin,
+  MapPinned,
   Menu,
   Settings,
   ShoppingBag,
@@ -51,7 +52,7 @@ type NavigationItem = {
 
 const adminMenuItems: NavigationItem[] = [
   { label: "Dashboard", href: "/admin", group: "Geral", icon: LayoutDashboard },
-  { label: "Polos", href: "/admin/polos", group: "Gestao", icon: MapPin },
+  { label: "Polos", href: "/admin/polos", group: "Gestao", icon: MapPinned },
   { label: "Locais", href: "/admin/locais", group: "Gestao", icon: MapPin },
   { label: "Turmas", href: "/admin/turmas", group: "Gestao", icon: GraduationCap },
   { label: "Alunas", href: "/admin/alunas", group: "Gestao", icon: Users },
@@ -60,7 +61,7 @@ const adminMenuItems: NavigationItem[] = [
   { label: "Cobrancas", href: "/admin/cobrancas", group: "Financeiro", icon: AlertCircle },
   { label: "Produtos", href: "/admin/produtos", group: "Loja", icon: ShoppingBag },
   { label: "Eventos", href: "/admin/eventos", group: "Loja", icon: CalendarDays },
-  { label: "Conta", href: "/admin/conta", group: "Sistema", icon: Building2 },
+  { label: "Instituicao", href: "/admin/conta", group: "Sistema", icon: Building2 },
   { label: "Acessos", href: "/admin/usuarios", group: "Sistema", icon: UserCog },
   { label: "Configuracoes", href: "/admin/configuracoes", group: "Sistema", icon: Settings },
 ]

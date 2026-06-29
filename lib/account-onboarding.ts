@@ -20,5 +20,5 @@ export function safeAccountNextPath(value: string | null | undefined) {
 
 export function authConfirmErrorPath(nextPath: string) {
   if (nextPath === "/redefinir-senha") return "/recuperar-senha?erro=link-invalido"
-  return "/login?erro=confirmacao-email"
+  return "/confirmacao-email?erro=link-invalido"
 }

@@ -8,7 +8,7 @@ Este diretorio e a base viva de documentacao do projeto. Ele registra o estado a
 - A base parece ter origem em v0.app, conforme `README.md`, `package.json` e `metadata.generator`.
 - O sistema nasceu single-client/single-tenant. Em 2026-06-26 foi criada a fundacao multi-tenant, foi adicionada a migration de Cora por tenant e foi criado o fluxo publico de nova conta SaaS.
 - Regra permanente: Codex nunca executa nada no banco. Toda mudanca de banco deve virar migration versionada, e somente o usuario executa no Supabase.
-- O diretorio atual nao esta inicializado como repositorio Git, pois `git status --short` retornou `fatal: not a git repository`.
+- O diretorio atual responde a `git status`; operacoes de staging, commit e push ficam sob comando explicito do usuario.
 - A primeira etapa de migracao de stack foi aplicada em 2026-06-24: Next/React foi mantido, TypeScript passou a bloquear build, Vitest e ESLint foram configurados, `middleware.ts` foi migrado para `proxy.ts`, e testes unitarios iniciais foram adicionados.
 - Em 2026-06-25, o design system foi realinhado ao projeto de referencia `frota-prodexy-prototipo`: branding centralizado, tokens visuais Prodexy, shell autenticado, header publico, login, dashboards, telas administrativas, telas publicas e componentes compartilhados foram atualizados sem tocar no banco e sem rodar servidor local.
 - Em 2026-06-26, a aplicacao passou a ter contexto de tenant nas rotas principais, gestao interna de usuarios por tenant, configuracao Cora por tenant via migration `0002` e criacao publica de conta SaaS via `/criar-conta` com confirmacao de e-mail.
@@ -25,7 +25,7 @@ Este diretorio e a base viva de documentacao do projeto. Ele registra o estado a
 - [08 - Design system Prodexy](./08-design-system-prodexy.md): padroes visuais adotados a partir do projeto de referencia.
 - [09 - Fundacao multi-tenant](./09-multi-tenant.md): migration, decisoes, modelo de tenants/memberships e pendencias de SaaS.
 - [10 - Testes de login e isolamento](./10-testes-login-isolamento.md): como criar contas/tenants de teste e validar isolamento no navegador.
-- [11 - Criacao de conta SaaS](./11-criacao-conta-saas.md): fluxo publico de cadastro de nova escolinha, confirmacao de e-mail e variaveis de ambiente.
+- [11 - Criacao de conta SaaS](./11-criacao-conta-saas.md): fluxo publico de cadastro de nova instituicao, confirmacao de e-mail, estados de acesso, onboarding e variaveis de ambiente.
 - [12 - Plano executivo V1 SaaS](./12-plano-executivo-v1-saas.md): fases, entregaveis, paginas, Stripe, Cora, riscos e criterios de pronto para a V1.
 
 ## Principio de trabalho daqui em diante

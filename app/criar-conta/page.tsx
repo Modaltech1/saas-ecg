@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition } from "react"
 import Link from "next/link"
 import { MailCheck } from "lucide-react"
 import { normalizarSlugConta } from "@/lib/account-onboarding"
-import { criarContaEscolinha } from "@/lib/supabase/actions"
+import { criarContaInstituicao } from "@/lib/supabase/actions"
 import { AuthCard, AuthError } from "@/components/shared/auth-card"
 import { PasswordInput } from "@/components/shared/password-input"
 import { Button } from "@/components/ui/button"
@@ -14,14 +14,14 @@ import { Label } from "@/components/ui/label"
 export default function CriarContaPage() {
   const [erro, setErro] = useState<string | null>(null)
   const [sucesso, setSucesso] = useState<{ email: string; slug: string } | null>(null)
-  const [nomeEscolinha, setNomeEscolinha] = useState("")
+  const [nomeInstituicao, setNomeInstituicao] = useState("")
   const [slugManual, setSlugManual] = useState("")
   const [mostrarSenha, setMostrarSenha] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const slug = useMemo(
-    () => normalizarSlugConta(slugManual || nomeEscolinha),
-    [nomeEscolinha, slugManual],
+    () => normalizarSlugConta(slugManual || nomeInstituicao),
+    [nomeInstituicao, slugManual],
   )
 
   function handleSubmit(formData: FormData) {
@@ -29,7 +29,7 @@ export default function CriarContaPage() {
     setSucesso(null)
 
     startTransition(async () => {
-      const resultado = await criarContaEscolinha(formData)
+      const resultado = await criarContaInstituicao(formData)
 
       if (resultado?.erro) {
         setErro(resultado.erro)
@@ -44,7 +44,7 @@ export default function CriarContaPage() {
 
   if (sucesso) {
     return (
-      <AuthCard title="Confirme seu e-mail" description="Enviamos um link de ativacao para concluir sua conta.">
+      <AuthCard title="Confirme seu e-mail" description="Enviamos um link de ativacao para concluir o cadastro da instituicao.">
         <div className="space-y-5 text-center">
           <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
             <MailCheck className="size-7" />
@@ -53,9 +53,9 @@ export default function CriarContaPage() {
             O link foi enviado para <strong className="text-foreground">{sucesso.email}</strong>.
           </p>
           <div className="rounded-lg border border-border bg-background px-4 py-3 text-left text-sm">
-            <p className="font-semibold text-foreground">Conta criada como pendente</p>
+            <p className="font-semibold text-foreground">Instituicao criada como pendente</p>
             <p className="mt-1 text-muted-foreground">
-              Depois da confirmacao, a conta <span className="font-mono text-foreground">{sucesso.slug}</span> sera ativada.
+              Depois da confirmacao, a instituicao <span className="font-mono text-foreground">{sucesso.slug}</span> sera ativada.
             </p>
           </div>
           <Button asChild className="w-full">
@@ -67,15 +67,15 @@ export default function CriarContaPage() {
   }
 
   return (
-    <AuthCard title="Criar conta" description="Crie a conta da sua instituicao. O acesso fica ativo depois da confirmacao por e-mail.">
+    <AuthCard title="Criar conta" description="Cadastre sua instituicao. O acesso fica ativo depois da confirmacao por e-mail.">
       <form action={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="nome_escolinha">Nome da instituicao</Label>
+          <Label htmlFor="nome_instituicao">Nome da instituicao</Label>
           <Input
-            id="nome_escolinha"
-            name="nome_escolinha"
-            value={nomeEscolinha}
-            onChange={(event) => setNomeEscolinha(event.target.value)}
+            id="nome_instituicao"
+            name="nome_instituicao"
+            value={nomeInstituicao}
+            onChange={(event) => setNomeInstituicao(event.target.value)}
             placeholder="Ex.: Instituto Movimento"
             required
             disabled={isPending}
@@ -143,7 +143,7 @@ export default function CriarContaPage() {
         <label className="flex gap-3 rounded-lg border border-border bg-background p-3 text-sm">
           <input name="aceite_termos" type="checkbox" className="mt-1 size-4" required disabled={isPending} />
           <span className="text-muted-foreground">
-            Confirmo que posso criar e administrar esta conta.
+            Confirmo que posso criar e administrar esta instituicao.
           </span>
         </label>
 

@@ -73,7 +73,7 @@ export default async function ContaPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <MobileHeaderServer title="Conta" />
+      <MobileHeaderServer title="Instituicao" />
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
         <div className="grid gap-4 sm:grid-cols-3">

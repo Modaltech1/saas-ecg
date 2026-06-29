@@ -4,10 +4,10 @@ Este documento define o fluxo publico para uma nova instituicao criar conta na p
 
 ## Decisao de produto
 
-Criar uma nova conta SaaS nao e uma acao administrativa dentro de outro tenant. O fluxo correto e publico:
+Criar uma nova instituicao SaaS nao e uma acao administrativa dentro de outro tenant. O fluxo correto e publico:
 
 ```txt
-/criar-conta -> Supabase email confirmation -> /auth/confirm -> /admin
+/criar-conta -> Supabase email confirmation -> /auth/confirm -> /admin/onboarding -> /admin
 ```
 
 `/admin/usuarios` fica restrito a criar usuarios dentro do tenant atual.
@@ -15,7 +15,7 @@ Criar uma nova conta SaaS nao e uma acao administrativa dentro de outro tenant. 
 ## Fluxo implementado
 
 1. Usuario acessa `/criar-conta`.
-2. Preenche nome da conta, identificador publico, nome do responsavel, e-mail, telefone e senha.
+2. Preenche nome da instituicao, identificador publico, nome do responsavel, e-mail, telefone e senha.
 3. Aplicacao cria um tenant com status `pendente_confirmacao`.
 4. Aplicacao chama Supabase Auth `signUp` com metadata:
    - `onboarding_tipo = nova_conta_saas`
@@ -31,24 +31,53 @@ Criar uma nova conta SaaS nao e uma acao administrativa dentro de outro tenant. 
    - `perfis.ativo = true`
    - `tenant_memberships.status = ativo`
    - `tenant_account_signups.status = confirmado`
-9. Usuario entra no painel `/admin`.
+9. Usuario entra no onboarding inicial `/admin/onboarding`.
+10. Ao concluir o onboarding, `tenants.metadata.onboarding_inicial_concluido_em` e gravado e o usuario segue para `/admin`.
 
 ## Fluxos complementares de autenticacao
 
-Todos os fluxos abaixo reaproveitam o layout compartilhado de autenticacao (`AuthCard`, `AuthError`, `PasswordInput`) e mantem a linguagem de produto em "conta" para o usuario final.
+Todos os fluxos abaixo reaproveitam o layout compartilhado de autenticacao (`AuthCard`, `AuthError`, `PasswordInput`). A linguagem principal da UI e "Instituicao"; "Conta" fica restrito a acesso, credenciais, plano e contexto tecnico.
 
 | Rota | Objetivo | Observacao |
 | --- | --- | --- |
-| `/reenviar-confirmacao` | Reenviar e-mail de confirmacao para contas pendentes | Usa `supabase.auth.resend` com callback `/auth/confirm?next=/admin` |
+| `/reenviar-confirmacao` | Reenviar e-mail de confirmacao para instituicoes pendentes | Se o e-mail ja estiver confirmado, informa que o usuario ja pode entrar; caso contrario usa `supabase.auth.resend` com callback `/auth/confirm?next=/admin` |
 | `/recuperar-senha` | Solicitar link de recuperacao de senha | Usa `supabase.auth.resetPasswordForEmail` com callback `/auth/confirm?next=/redefinir-senha` |
 | `/redefinir-senha` | Definir nova senha apos abrir o link recebido por e-mail | Exige sessao temporaria criada pelo callback de recuperacao |
 | `/admin/conta` | Trocar senha estando logado | Confirma a senha atual antes de atualizar a senha |
+| `/confirmacao-email` | Mostrar link de confirmacao invalido ou expirado | Oferece reenvio de confirmacao |
+| `/conta-pendente` | Mostrar instituicao aguardando confirmacao | Oferece reenvio de confirmacao |
+| `/conta-suspensa` | Mostrar instituicao suspensa ou cancelada | Bloqueia acesso administrativo com mensagem clara |
+| `/admin/onboarding` | Primeira entrada guiada | Usa `tenants.metadata` e nao exige migration nova |
 
 O callback `/auth/confirm` diferencia o destino:
 
-- confirmacao de conta retorna para `/admin` com `conta=confirmada`;
+- confirmacao de instituicao retorna para `/admin` com `conta=confirmada`;
 - recuperacao de senha retorna para `/redefinir-senha` com `fluxo=recuperacao`;
 - link de recuperacao invalido retorna para `/recuperar-senha?erro=link-invalido`.
+- link de confirmacao invalido retorna para `/confirmacao-email?erro=link-invalido`.
+
+## Estados de acesso
+
+O proxy e o login tratam os status principais de `tenants.status`:
+
+| Status | Resultado |
+| --- | --- |
+| `pendente_confirmacao` | Redireciona para `/conta-pendente` |
+| `ativo` sem onboarding concluido | Primeira entrada em `/admin` redireciona para `/admin/onboarding` |
+| `ativo` com onboarding concluido | Acesso normal ao painel |
+| `suspenso` | Redireciona para `/conta-suspensa?status=suspenso` |
+| `cancelado` | Redireciona para `/conta-suspensa?status=cancelado` |
+
+O onboarding inicial grava em `tenants.metadata`:
+
+```json
+{
+  "onboarding_inicial_concluido_em": "ISO_DATE",
+  "onboarding_objetivos": []
+}
+```
+
+Nao ha migration nova para esta etapa.
 
 ## Migration necessaria
 

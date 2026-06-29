@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { isValidAccountSlug, normalizarSlugConta } from "@/lib/account-onboarding"
 import { ensureSaasAccountActivated } from "@/lib/account-onboarding-server"
+import { accountStatusPath, shouldShowInitialOnboarding } from "@/lib/account-status"
 import { requireTenantContext, withTenant } from "@/lib/tenant"
 import { createClient, createAdminClient } from "@/lib/supabase/server"
 
@@ -31,7 +32,15 @@ export async function login(formData: FormData) {
     password: senha,
   })
 
-  if (error || !data.user) {
+  if (error) {
+    if (error.message.toLowerCase().includes("email not confirmed")) {
+      return { sucesso: true, destino: "/conta-pendente" }
+    }
+
+    return { erro: "E-mail ou senha invalidos." }
+  }
+
+  if (!data.user) {
     return { erro: "E-mail ou senha invalidos." }
   }
 
@@ -46,13 +55,32 @@ export async function login(formData: FormData) {
       .single(),
     adminClient
       .from("tenant_memberships")
-      .select("role, status, tenants!inner(status)")
+      .select("role, status, tenants!inner(status, metadata)")
       .eq("user_id", data.user.id)
-      .eq("status", "ativo")
+      .order("is_default", { ascending: false })
+      .order("criado_em", { ascending: true })
       .limit(1),
   ])
 
-  const role = memberships?.[0]?.role as string | undefined
+  const membership = memberships?.[0] as
+    | {
+        role: string
+        status: string
+        tenants: { status: string; metadata: unknown } | { status: string; metadata: unknown }[] | null
+      }
+    | undefined
+  const tenant = Array.isArray(membership?.tenants)
+    ? membership?.tenants[0]
+    : membership?.tenants
+  const tenantStatus = tenant?.status ?? (membership?.status === "convidado" ? "pendente_confirmacao" : null)
+  const statusPath = accountStatusPath(tenantStatus)
+
+  if (statusPath) {
+    await supabase.auth.signOut()
+    return { sucesso: true, destino: statusPath }
+  }
+
+  const role = membership?.status === "ativo" ? membership.role : undefined
 
   if (!perfil || !perfil.ativo || !role) {
     await supabase.auth.signOut()
@@ -60,7 +88,16 @@ export async function login(formData: FormData) {
   }
 
   if (["owner", "admin", "colaborador"].includes(role) || perfil.papel === "admin") {
-    return { sucesso: true, destino: "/admin" }
+    const destino = shouldShowInitialOnboarding({
+      pathname: "/admin",
+      role,
+      tenantStatus,
+      tenantMetadata: tenant?.metadata ?? null,
+    })
+      ? "/admin/onboarding"
+      : "/admin"
+
+    return { sucesso: true, destino }
   }
 
   if (role === "professora" || perfil.papel === "professora") {
@@ -99,6 +136,14 @@ export async function reenviarConfirmacaoEmail(formData: FormData) {
     return { erro: "URL publica da aplicacao nao configurada. Defina NEXT_PUBLIC_APP_URL." }
   }
 
+  const adminClient = createAdminClient()
+  const { data: usuariosExistentes } = await adminClient.auth.admin.listUsers()
+  const usuario = usuariosExistentes?.users?.find((u) => u.email?.toLowerCase() === email)
+
+  if (usuario?.email_confirmed_at || usuario?.confirmed_at) {
+    return { sucesso: true, email, status: "email_confirmado" as const }
+  }
+
   const supabase = await createClient()
   const { error } = await supabase.auth.resend({
     type: "signup",
@@ -112,7 +157,7 @@ export async function reenviarConfirmacaoEmail(formData: FormData) {
     return { erro: "Nao foi possivel reenviar a confirmacao agora. Tente novamente em alguns minutos." }
   }
 
-  return { sucesso: true, email }
+  return { sucesso: true, email, status: "confirmacao_reenviada" as const }
 }
 
 export async function enviarRecuperacaoSenha(formData: FormData) {
@@ -171,7 +216,6 @@ export async function alterarSenhaLogado(formData: FormData) {
 
   if (!senhaAtual) return { erro: "Informe a senha atual." }
   if (erroSenha) return { erro: erroSenha }
-  if (senhaAtual === senha) return { erro: "A nova senha precisa ser diferente da senha atual." }
 
   const supabase = await createClient()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
@@ -189,6 +233,8 @@ export async function alterarSenhaLogado(formData: FormData) {
     return { erro: "Senha atual incorreta." }
   }
 
+  if (senhaAtual === senha) return { erro: "A nova senha precisa ser diferente da senha atual." }
+
   const { error } = await supabase.auth.updateUser({ password: senha })
 
   if (error) {
@@ -198,17 +244,21 @@ export async function alterarSenhaLogado(formData: FormData) {
   return { sucesso: true }
 }
 
-export async function criarContaEscolinha(formData: FormData) {
-  const nomeEscolinha = (formData.get("nome_escolinha") as string).trim()
+export async function criarContaInstituicao(formData: FormData) {
+  const nomeInstituicao = (
+    (formData.get("nome_instituicao") as string | null) ??
+    (formData.get("nome_escolinha") as string | null) ??
+    ""
+  ).trim()
   const nomeResponsavel = (formData.get("nome_responsavel") as string).trim()
   const email = (formData.get("email") as string).trim().toLowerCase()
   const telefone = ((formData.get("telefone") as string) ?? "").trim()
   const senha = formData.get("senha") as string
   const confirmarSenha = formData.get("confirmar_senha") as string
-  const slug = normalizarSlugConta((formData.get("slug") as string) || nomeEscolinha)
+  const slug = normalizarSlugConta((formData.get("slug") as string) || nomeInstituicao)
   const aceiteTermos = formData.get("aceite_termos") === "on"
 
-  if (!nomeEscolinha || !nomeResponsavel || !email || !senha || !confirmarSenha || !slug) {
+  if (!nomeInstituicao || !nomeResponsavel || !email || !senha || !confirmarSenha || !slug) {
     return { erro: "Preencha todos os campos obrigatorios." }
   }
 
@@ -225,7 +275,7 @@ export async function criarContaEscolinha(formData: FormData) {
   }
 
   if (!aceiteTermos) {
-    return { erro: "Confirme que voce pode criar esta conta." }
+    return { erro: "Confirme que voce pode criar e administrar esta instituicao." }
   }
 
   const origin = await appOrigin()
@@ -241,7 +291,7 @@ export async function criarContaEscolinha(formData: FormData) {
   ])
 
   if (tenantExistente) {
-    return { erro: "Este identificador de conta ja esta em uso." }
+    return { erro: "Este identificador ja esta em uso." }
   }
 
   const emailJaExiste = usuariosExistentes?.users?.some(
@@ -256,7 +306,7 @@ export async function criarContaEscolinha(formData: FormData) {
     .from("tenants")
     .insert({
       slug,
-      nome: nomeEscolinha,
+      nome: nomeInstituicao,
       status: "pendente_confirmacao",
       plano: "teste",
       metadata: {
@@ -271,7 +321,7 @@ export async function criarContaEscolinha(formData: FormData) {
 
   if (erroTenant || !tenant) {
     return {
-      erro: erroTenant?.message || "Nao foi possivel iniciar o cadastro da conta.",
+      erro: erroTenant?.message || "Nao foi possivel iniciar o cadastro da instituicao.",
     }
   }
 
@@ -287,7 +337,7 @@ export async function criarContaEscolinha(formData: FormData) {
         papel: "admin",
         tenant_id: tenant.id,
         tenant_slug: slug,
-        tenant_nome: nomeEscolinha,
+        tenant_nome: nomeInstituicao,
         onboarding_tipo: "nova_conta_saas",
       },
     },
@@ -295,7 +345,7 @@ export async function criarContaEscolinha(formData: FormData) {
 
   if (erroSignup || !data.user) {
     await adminClient.from("tenants").delete().eq("id", tenant.id)
-    return { erro: erroSignup?.message || "Nao foi possivel criar o usuario da conta." }
+    return { erro: erroSignup?.message || "Nao foi possivel criar o usuario da instituicao." }
   }
 
   await adminClient
@@ -305,7 +355,7 @@ export async function criarContaEscolinha(formData: FormData) {
       user_id: data.user.id,
       email,
       nome_responsavel: nomeResponsavel,
-      nome_escolinha: nomeEscolinha,
+      nome_escolinha: nomeInstituicao,
       slug,
       status: "aguardando_email",
       metadata: {
@@ -454,7 +504,7 @@ export async function atualizarConta(formData: FormData) {
   try {
     ctx = await requireTenantContext(["owner", "admin"])
   } catch {
-    return { erro: "Sem permissao para atualizar esta conta." }
+    return { erro: "Sem permissao para atualizar esta instituicao." }
   }
 
   const nome = (formData.get("nome") as string).trim()
@@ -469,7 +519,7 @@ export async function atualizarConta(formData: FormData) {
   const estado = ((formData.get("estado") as string) ?? "").trim().toUpperCase()
 
   if (!nome) {
-    return { erro: "Informe o nome da conta." }
+    return { erro: "Informe o nome da instituicao." }
   }
 
   if (emailContato && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailContato)) {
@@ -528,6 +578,49 @@ export async function atualizarConta(formData: FormData) {
     })
 
   if (configError) return { erro: configError.message }
+
+  return { sucesso: true }
+}
+
+export async function concluirOnboardingInicial(formData: FormData) {
+  let ctx
+  try {
+    ctx = await requireTenantContext(["owner", "admin"])
+  } catch {
+    return { erro: "Sem permissao para concluir o onboarding." }
+  }
+
+  const objetivos = formData.getAll("objetivos").map((value) => String(value))
+  const now = new Date().toISOString()
+
+  const { data: tenantAtual, error: tenantReadError } = await ctx.db
+    .from("tenants")
+    .select("metadata")
+    .eq("id", ctx.tenantId)
+    .maybeSingle()
+
+  if (tenantReadError) {
+    return { erro: tenantReadError.message }
+  }
+
+  const currentMetadata =
+    tenantAtual && typeof tenantAtual.metadata === "object" && tenantAtual.metadata !== null
+      ? tenantAtual.metadata as Record<string, unknown>
+      : {}
+
+  const { error } = await ctx.db
+    .from("tenants")
+    .update({
+      metadata: {
+        ...currentMetadata,
+        onboarding_inicial_concluido_em: now,
+        onboarding_objetivos: objetivos,
+      },
+      atualizado_em: now,
+    })
+    .eq("id", ctx.tenantId)
+
+  if (error) return { erro: error.message }
 
   return { sucesso: true }
 }

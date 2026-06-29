@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import useSWR from "swr"
-import { Building2, Edit, Loader2, MapPin, Plus, Trash2, Users } from "lucide-react"
+import { Building2, Edit, Loader2, MapPin, MapPinned, Plus, Trash2, Users } from "lucide-react"
 import { MobileHeader } from "@/components/layout/mobile-header"
 import { MetricCard } from "@/components/shared/metric-card"
 import { PageHeader } from "@/components/shared/page-header"
@@ -117,10 +117,10 @@ export default function PolosPage() {
         </PageHeader>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard title="Polos cadastrados" value={polos.length} icon={MapPin} tone="blue" />
-          <MetricCard title="Locais vinculados" value={locaisTotal} icon={Building2} />
+          <MetricCard title="Polos cadastrados" value={polos.length} icon={MapPinned} tone="blue" />
+          <MetricCard title="Locais vinculados" value={locaisTotal} icon={MapPin} />
           <MetricCard title="Media de locais" value={polos.length ? (locaisTotal / polos.length).toFixed(1) : "0"} icon={Users} />
-          <MetricCard title="Resultado filtrado" value={filtered.length} icon={MapPin} />
+          <MetricCard title="Resultado filtrado" value={filtered.length} icon={MapPinned} />
         </div>
 
         <Card>
@@ -142,7 +142,7 @@ export default function PolosPage() {
               </div>
             ) : filtered.length === 0 ? (
               <EmptyState
-                icon={MapPin}
+                icon={MapPinned}
                 title="Nenhum polo encontrado"
                 description="Ajuste a busca ou cadastre um novo polo para organizar os locais."
                 action={

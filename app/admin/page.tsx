@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Loader2,
   MapPin,
+  MapPinned,
   Settings,
   ShoppingBag,
   TrendingUp,
@@ -28,7 +29,7 @@ import { formatCurrency } from "@/lib/utils"
 const fetcher = (url: string) => fetch(url).then((response) => response.json())
 
 const quickLinks = [
-  { label: "Polos", href: "/admin/polos", icon: MapPin, description: "Unidades macro" },
+  { label: "Polos", href: "/admin/polos", icon: MapPinned, description: "Unidades macro" },
   { label: "Locais", href: "/admin/locais", icon: MapPin, description: "Espacos de aula" },
   { label: "Turmas", href: "/admin/turmas", icon: GraduationCap, description: "Grupos e niveis" },
   { label: "Alunas", href: "/admin/alunas", icon: Users, description: "Cadastro e status" },
@@ -37,7 +38,7 @@ const quickLinks = [
   { label: "Cobrancas", href: "/admin/cobrancas", icon: AlertCircle, description: "Pendencias" },
   { label: "Produtos", href: "/admin/produtos", icon: ShoppingBag, description: "Vitrine e loja" },
   { label: "Eventos", href: "/admin/eventos", icon: CalendarDays, description: "Inscricoes" },
-  { label: "Conta", href: "/admin/conta", icon: Building2, description: "Dados e seguranca" },
+  { label: "Instituicao", href: "/admin/conta", icon: Building2, description: "Dados e seguranca" },
   { label: "Acessos", href: "/admin/usuarios", icon: UserCog, description: "Usuarios" },
   { label: "Configuracoes", href: "/admin/configuracoes", icon: Settings, description: "Integracoes" },
 ]
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
       <MobileHeader title="Painel administrativo" />
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 lg:px-8">
-        <PageHeader title="Painel administrativo" description="Visao geral operacional e financeira da conta." />
+        <PageHeader title="Painel administrativo" description="Visao geral operacional e financeira da instituicao." />
 
         {isLoading ? (
           <Card>
@@ -70,7 +71,7 @@ export default function AdminDashboard() {
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <MetricCard title="Alunas ativas" value={totalAlunas} icon={Users} />
               <MetricCard title="Professoras" value={totalProfessoras} icon={GraduationCap} />
-              <MetricCard title="Polos" value={totalPolos} icon={MapPin} tone="blue" />
+              <MetricCard title="Polos" value={totalPolos} icon={MapPinned} tone="blue" />
               <MetricCard title="Locais" value={totalLocais} icon={MapPin} />
             </div>
 
@@ -124,12 +125,12 @@ export default function AdminDashboard() {
                 <div className="rounded-lg bg-muted/50 p-4">
                   <AlertCircle className="mb-3 size-5 text-[color:var(--warning)]" />
                   <p className="font-semibold">Risco financeiro</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Pendencias e cobrancas devem virar indicadores auditaveis por conta.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Pendencias e cobrancas devem virar indicadores auditaveis por instituicao.</p>
                 </div>
                 <div className="rounded-lg bg-muted/50 p-4">
                   <Settings className="mb-3 size-5 text-muted-foreground" />
                   <p className="font-semibold">Configuracao</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Dados da conta, planos e permissoes entram como proximas camadas de produto.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Dados da instituicao, planos e permissoes entram como proximas camadas de produto.</p>
                 </div>
               </div>
             </Section>

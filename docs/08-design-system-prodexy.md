@@ -30,6 +30,39 @@ Como o projeto atual ainda nao possui `@prodexy/ui` instalado e nao queriamos de
 - os dashboards de admin e professora foram reestruturados com cards, secoes e metricas do padrao de referencia;
 - as paginas publicas principais tiveram o verde antigo substituido por tokens de tema.
 
+## Branding por instituicao
+
+Decisao adicionada em 2026-06-29: cada instituicao precisa conseguir configurar sua propria identidade visual basica. Isso nao e white-label profundo, mas e parte essencial da V1 porque afeta confianca nos links externos, experiencia mobile/PWA e percepcao de produto.
+
+Escopo de branding basico por instituicao:
+
+- logo principal da instituicao;
+- logo/icone para PWA e atalhos quando tecnicamente viavel;
+- cor primaria;
+- cor secundaria/acento;
+- cor de destaque/alerta quando necessario;
+- aplicacao dos tokens em app autenticado e paginas publicas;
+- fallback seguro para branding padrao quando a instituicao nao configurar identidade.
+
+Locais onde o branding da instituicao deve aparecer:
+
+- header/shell autenticado;
+- login e fluxos de autenticacao quando houver contexto de instituicao;
+- `/cadastro`;
+- `/pagamentos`;
+- `/produtos`;
+- `/eventos`;
+- manifesto/PWA, favicon e icones quando houver dominio/subdominio ou resolucao segura de instituicao.
+
+Regras de engenharia:
+
+- CSS deve consumir tokens dinamicos por instituicao, sem duplicar estilos por pagina;
+- cores configuradas precisam passar por validacao minima de contraste;
+- logo precisa ter formatos e limites claros de tamanho/dimensao;
+- assets devem ter fallback e nao podem quebrar carregamento de paginas publicas;
+- cache de assets e manifest PWA precisa ser considerado para troca de logo/cor;
+- a marca Prodexy pode permanecer no rodape ou area institucional conforme decisao comercial futura.
+
 ## Aprofundamento aplicado em 2026-06-25
 
 Depois da primeira aproximacao visual, foi feita uma segunda rodada para reduzir vestigios do layout antigo nas telas que ainda pareciam isoladas do design de referencia.

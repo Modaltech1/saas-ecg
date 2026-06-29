@@ -19,11 +19,11 @@ Rode no banco de teste, nesta ordem:
 
 | Fluxo | Rota | Finalidade |
 | --- | --- | --- |
-| Criar nova escolinha/tenant | `/criar-conta` | Cadastro publico SaaS com confirmacao de e-mail |
+| Criar nova instituicao/tenant | `/criar-conta` | Cadastro publico SaaS com confirmacao de e-mail |
 | Confirmar e-mail | `/auth/confirm` | Callback Supabase que ativa tenant, perfil e membership |
 | Criar usuario dentro da conta | `/admin/usuarios` | Owner/admin adiciona admin, colaborador ou professora ao tenant atual |
 
-`/admin/usuarios` nao deve criar nova escolinha. Ele serve apenas para administracao interna da conta autenticada.
+`/admin/usuarios` nao deve criar nova instituicao. Ele serve apenas para administracao interna da instituicao autenticada.
 
 ## Teste manual de nova conta
 
@@ -32,10 +32,10 @@ Rode no banco de teste, nesta ordem:
 3. Abra `/criar-conta`.
 4. Crie uma conta com e-mail real de teste.
 5. Confirme o e-mail pelo link recebido.
-6. Confirme que o callback redireciona para `/admin`.
+6. Confirme que o callback redireciona para `/admin/onboarding` ou `/admin`.
 7. Crie um polo ou outro dado simples.
 8. Saia e entre com o tenant legado.
-9. Confirme que o dado da nova escolinha nao aparece no tenant legado.
+9. Confirme que o dado da nova instituicao nao aparece no tenant legado.
 
 ## Se o usuario existe no Auth mas `perfis` esta vazio
 

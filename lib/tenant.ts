@@ -65,7 +65,7 @@ export function tenantErrorResponse(error: unknown) {
   }
 
   console.error("[tenant]", error)
-  return NextResponse.json({ error: "Erro ao resolver contexto da conta" }, { status: 500 })
+  return NextResponse.json({ error: "Erro ao resolver contexto da instituicao" }, { status: 500 })
 }
 
 export function withTenant<T extends Record<string, unknown>>(payload: T, tenantId: string) {
@@ -90,7 +90,7 @@ export async function resolvePublicTenant(request?: NextRequest) {
   }
 
   if (!data || data.status !== "ativo") {
-    throw new TenantAccessError(404, "Conta nao encontrada ou inativa")
+    throw new TenantAccessError(404, "Instituicao nao encontrada ou inativa")
   }
 
   return {
@@ -135,11 +135,11 @@ export async function requireTenantContext(
   const tenant = one(membership?.tenants)
 
   if (!membership || !tenant || tenant.status !== "ativo") {
-    throw new TenantAccessError(403, "Usuario sem conta ativa")
+    throw new TenantAccessError(403, "Usuario sem instituicao ativa")
   }
 
   if (!allowedRoles.includes(membership.role)) {
-    throw new TenantAccessError(403, "Sem permissao para esta conta")
+    throw new TenantAccessError(403, "Sem permissao para esta instituicao")
   }
 
   return {

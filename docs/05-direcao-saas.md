@@ -75,7 +75,7 @@ Nao precisamos mover tudo de uma vez. Cada proxima feature pode nascer no padrao
 
 ### Fase 0 - Base de governanca
 
-- Inicializar Git no projeto. Ainda pendente: existe pasta `.git`, mas `git status` informa que nao e repositorio valido.
+- Git local responde a `git status`; commits e pushes continuam sob comando explicito do usuario.
 - Definir estrategia de branch/commit. Ainda pendente.
 - Remover ambiguidade de package manager: escolher npm ou pnpm. Parcial: esta rodada usou npm e atualizou `package-lock.json`; `pnpm-lock.yaml` ainda existe.
 - Ativar checagem de TypeScript no build. Concluido em 2026-06-24.
@@ -170,11 +170,12 @@ Depois do tenant:
 
 Depois de rodar a migration `20260626_0003_account_signup_onboarding.sql`, o proximo alvo tecnico deve ser validar os fluxos reais por interface:
 
-1. criar uma nova escolinha pelo fluxo publico `/criar-conta`;
+1. criar uma nova instituicao pelo fluxo publico `/criar-conta`;
 2. confirmar o e-mail pelo link do Supabase;
-3. criar usuarios admin/professora dentro de cada tenant em `/admin/usuarios`;
-4. inserir dados minimos de polo, turma, aluna e produto por tenant;
-5. confirmar pela UI que cada tenant so enxerga os proprios dados;
-6. criar mocks integrados para Cora por tenant, sem chamada externa real.
+3. concluir o onboarding inicial em `/admin/onboarding`;
+4. criar usuarios admin/professora dentro de cada tenant em `/admin/usuarios`;
+5. inserir dados minimos de polo, turma, aluna e produto por tenant;
+6. confirmar pela UI que cada tenant so enxerga os proprios dados;
+7. criar mocks integrados para Cora por tenant, sem chamada externa real.
 
 Scripts que tocam Supabase real, como `npm run test:tenant-isolation`, existem apenas para execucao controlada pelo usuario.
