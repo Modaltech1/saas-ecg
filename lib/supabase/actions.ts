@@ -77,6 +77,127 @@ export async function logout() {
   redirect("/login")
 }
 
+function emailValido(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function validarNovaSenha(senha: string, confirmarSenha: string) {
+  if (senha.length < 8) return "A senha precisa ter pelo menos 8 caracteres."
+  if (senha !== confirmarSenha) return "As senhas nao conferem."
+  return null
+}
+
+export async function reenviarConfirmacaoEmail(formData: FormData) {
+  const email = (formData.get("email") as string).trim().toLowerCase()
+
+  if (!email || !emailValido(email)) {
+    return { erro: "Informe um e-mail valido." }
+  }
+
+  const origin = await appOrigin()
+  if (!origin) {
+    return { erro: "URL publica da aplicacao nao configurada. Defina NEXT_PUBLIC_APP_URL." }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: {
+      emailRedirectTo: `${origin}/auth/confirm?next=/admin`,
+    },
+  })
+
+  if (error) {
+    return { erro: "Nao foi possivel reenviar a confirmacao agora. Tente novamente em alguns minutos." }
+  }
+
+  return { sucesso: true, email }
+}
+
+export async function enviarRecuperacaoSenha(formData: FormData) {
+  const email = (formData.get("email") as string).trim().toLowerCase()
+
+  if (!email || !emailValido(email)) {
+    return { erro: "Informe um e-mail valido." }
+  }
+
+  const origin = await appOrigin()
+  if (!origin) {
+    return { erro: "URL publica da aplicacao nao configurada. Defina NEXT_PUBLIC_APP_URL." }
+  }
+
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/confirm?next=/redefinir-senha`,
+  })
+
+  if (error) {
+    return { erro: "Nao foi possivel enviar a recuperacao agora. Tente novamente em alguns minutos." }
+  }
+
+  return { sucesso: true, email }
+}
+
+export async function redefinirSenha(formData: FormData) {
+  const senha = formData.get("senha") as string
+  const confirmarSenha = formData.get("confirmar_senha") as string
+  const erroSenha = validarNovaSenha(senha, confirmarSenha)
+
+  if (erroSenha) return { erro: erroSenha }
+
+  const supabase = await createClient()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    return { erro: "Link invalido ou expirado. Solicite uma nova recuperacao de senha." }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: senha })
+
+  if (error) {
+    return { erro: "Nao foi possivel redefinir a senha. Solicite um novo link e tente novamente." }
+  }
+
+  await supabase.auth.signOut()
+  return { sucesso: true }
+}
+
+export async function alterarSenhaLogado(formData: FormData) {
+  const senhaAtual = formData.get("senha_atual") as string
+  const senha = formData.get("senha") as string
+  const confirmarSenha = formData.get("confirmar_senha") as string
+  const erroSenha = validarNovaSenha(senha, confirmarSenha)
+
+  if (!senhaAtual) return { erro: "Informe a senha atual." }
+  if (erroSenha) return { erro: erroSenha }
+  if (senhaAtual === senha) return { erro: "A nova senha precisa ser diferente da senha atual." }
+
+  const supabase = await createClient()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+  if (userError || !user?.email) {
+    return { erro: "Sessao invalida. Entre novamente para alterar a senha." }
+  }
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: senhaAtual,
+  })
+
+  if (signInError) {
+    return { erro: "Senha atual incorreta." }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: senha })
+
+  if (error) {
+    return { erro: "Nao foi possivel alterar a senha agora." }
+  }
+
+  return { sucesso: true }
+}
+
 export async function criarContaEscolinha(formData: FormData) {
   const nomeEscolinha = (formData.get("nome_escolinha") as string).trim()
   const nomeResponsavel = (formData.get("nome_responsavel") as string).trim()

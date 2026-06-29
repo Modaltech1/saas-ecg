@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { isValidAccountSlug, normalizarSlugConta, safeAccountNextPath } from "@/lib/account-onboarding"
+import {
+  authConfirmErrorPath,
+  isValidAccountSlug,
+  normalizarSlugConta,
+  safeAccountNextPath,
+} from "@/lib/account-onboarding"
 
 describe("normalizarSlugConta", () => {
   it("normalizes account names into SaaS-safe slugs", () => {
@@ -26,10 +31,21 @@ describe("isValidAccountSlug", () => {
 describe("safeAccountNextPath", () => {
   it("keeps local paths", () => {
     expect(safeAccountNextPath("/admin")).toBe("/admin")
+    expect(safeAccountNextPath("/redefinir-senha")).toBe("/redefinir-senha")
   })
 
   it("blocks external redirects", () => {
     expect(safeAccountNextPath("https://evil.test")).toBe("/admin")
     expect(safeAccountNextPath("//evil.test")).toBe("/admin")
+  })
+})
+
+describe("authConfirmErrorPath", () => {
+  it("routes password recovery failures back to password recovery", () => {
+    expect(authConfirmErrorPath("/redefinir-senha")).toBe("/recuperar-senha?erro=link-invalido")
+  })
+
+  it("routes signup confirmation failures back to login", () => {
+    expect(authConfirmErrorPath("/admin")).toBe("/login?erro=confirmacao-email")
   })
 })

@@ -91,10 +91,10 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 
 ### Pendente
 
-- [ ] Criar fluxo de reenvio de confirmacao de e-mail.
-- [ ] Criar fluxo de recuperar senha.
-- [ ] Criar fluxo de redefinir senha.
-- [ ] Criar fluxo de troca de senha logado.
+- [x] Criar fluxo de reenvio de confirmacao de e-mail.
+- [x] Criar fluxo de recuperar senha.
+- [x] Criar fluxo de redefinir senha.
+- [x] Criar fluxo de troca de senha logado.
 - [ ] Criar pagina amigavel para link de confirmacao invalido/expirado.
 - [ ] Revisar middleware/proxy para suportar conta suspensa/cancelada.
 - [ ] Criar tela/estado visual de conta pendente.
@@ -108,8 +108,9 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] `/auth/confirm`
 - [x] `/admin/conta`
 - [x] `/admin/usuarios`
-- [ ] `/recuperar-senha`
-- [ ] `/redefinir-senha`
+- [x] `/reenviar-confirmacao`
+- [x] `/recuperar-senha`
+- [x] `/redefinir-senha`
 - [ ] `/confirmacao-email`
 - [ ] `/admin/onboarding`
 
@@ -120,7 +121,7 @@ Objetivo: garantir que a base de contas SaaS esteja correta antes de ampliar pro
 - [x] Admin cria usuarios internos sem criar novas contas.
 - [x] Conta possui tela de dados institucionais.
 - [ ] Conta inativa nao acessa admin.
-- [ ] Fluxos de senha estao prontos.
+- [x] Fluxos de senha estao prontos.
 - [ ] Onboarding inicial esta pronto.
 
 ## Fase 2 - Arquitetura de Codigo e Contratos de Dominio
@@ -355,8 +356,8 @@ Objetivo: reduzir risco antes de clientes reais.
 - [x] Corrigir perfil/membership se necessario.
 - [x] Criar pagina de conta.
 - [x] Profissionalizar linguagem de conta/acessos.
-- [ ] Recuperar senha.
-- [ ] Reenvio de confirmacao.
+- [x] Recuperar senha.
+- [x] Reenvio de confirmacao.
 - [ ] Docs de ambiente/Vercel.
 
 ### Sprint 2 - Layout e Onboarding
@@ -416,8 +417,9 @@ Publicas/auth:
 
 - [x] `/criar-conta`
 - [x] `/login`
-- [ ] `/recuperar-senha`
-- [ ] `/redefinir-senha`
+- [x] `/reenviar-confirmacao`
+- [x] `/recuperar-senha`
+- [x] `/redefinir-senha`
 - [ ] `/confirmacao-email`
 - [ ] `/termos`
 - [ ] `/privacidade`

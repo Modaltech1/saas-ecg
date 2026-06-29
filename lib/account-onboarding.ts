@@ -17,3 +17,8 @@ export function safeAccountNextPath(value: string | null | undefined) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) return "/admin"
   return value
 }
+
+export function authConfirmErrorPath(nextPath: string) {
+  if (nextPath === "/redefinir-senha") return "/recuperar-senha?erro=link-invalido"
+  return "/login?erro=confirmacao-email"
+}

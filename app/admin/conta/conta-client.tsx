@@ -4,8 +4,9 @@ import Link from "next/link"
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Building2, CheckCircle, KeyRound, Loader2, Save, ShieldCheck, Users } from "lucide-react"
-import { atualizarConta } from "@/lib/supabase/actions"
+import { alterarSenhaLogado, atualizarConta } from "@/lib/supabase/actions"
 import { PageHeader } from "@/components/shared/page-header"
+import { PasswordInput } from "@/components/shared/password-input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -31,7 +32,12 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
   const router = useRouter()
   const [erro, setErro] = useState<string | null>(null)
   const [sucesso, setSucesso] = useState<string | null>(null)
+  const [erroSenha, setErroSenha] = useState<string | null>(null)
+  const [sucessoSenha, setSucessoSenha] = useState<string | null>(null)
+  const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false)
+  const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [isPasswordPending, startPasswordTransition] = useTransition()
 
   function handleSubmit(formData: FormData) {
     setErro(null)
@@ -47,6 +53,22 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
 
       setSucesso("Dados da conta atualizados.")
       router.refresh()
+    })
+  }
+
+  function handlePasswordSubmit(formData: FormData) {
+    setErroSenha(null)
+    setSucessoSenha(null)
+
+    startPasswordTransition(async () => {
+      const result = await alterarSenhaLogado(formData)
+
+      if (result?.erro) {
+        setErroSenha(result.erro)
+        return
+      }
+
+      setSucessoSenha("Senha atualizada com sucesso.")
     })
   }
 
@@ -182,6 +204,75 @@ export function ContaClient({ initialData }: { initialData: ContaData }) {
                   Gerenciar acessos
                 </Link>
               </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <KeyRound className="size-5 text-primary" />
+                Trocar senha
+              </CardTitle>
+              <CardDescription>
+                Atualize sua senha de acesso mantendo a sessao atual.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form action={handlePasswordSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="senha_atual">Senha atual</Label>
+                  <PasswordInput
+                    id="senha_atual"
+                    name="senha_atual"
+                    visible={mostrarSenhaAtual}
+                    onToggleVisible={() => setMostrarSenhaAtual((value) => !value)}
+                    placeholder="Senha atual"
+                    required
+                    disabled={isPasswordPending}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="nova_senha">Nova senha</Label>
+                  <PasswordInput
+                    id="nova_senha"
+                    name="senha"
+                    visible={mostrarNovaSenha}
+                    onToggleVisible={() => setMostrarNovaSenha((value) => !value)}
+                    minLength={8}
+                    placeholder="Minimo 8 caracteres"
+                    required
+                    disabled={isPasswordPending}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmar_senha">Confirmar nova senha</Label>
+                  <PasswordInput
+                    id="confirmar_senha"
+                    name="confirmar_senha"
+                    visible={mostrarNovaSenha}
+                    onToggleVisible={() => setMostrarNovaSenha((value) => !value)}
+                    minLength={8}
+                    placeholder="Repita a nova senha"
+                    required
+                    disabled={isPasswordPending}
+                  />
+                </div>
+
+                {(erroSenha || sucessoSenha) ? (
+                  <div className={`rounded-lg border px-4 py-3 text-sm ${
+                    erroSenha ? "border-red-200 bg-red-50 text-red-700" : "border-green-200 bg-green-50 text-green-700"
+                  }`}>
+                    {erroSenha ?? sucessoSenha}
+                  </div>
+                ) : null}
+
+                <Button type="submit" disabled={isPasswordPending} className="w-full">
+                  {isPasswordPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                  Atualizar senha
+                </Button>
+              </form>
             </CardContent>
           </Card>
 

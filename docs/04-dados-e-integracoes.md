@@ -164,12 +164,14 @@ Uso atual:
 - Admin client para operacoes privilegiadas.
 - RLS documentado nos scripts.
 - Confirmacao de e-mail para `/criar-conta` usando callback `/auth/confirm`.
+- Reenvio de confirmacao e recuperacao/redefinicao de senha usando Supabase Auth e o mesmo callback `/auth/confirm`.
+- Troca de senha logada em `/admin/conta`, validando a senha atual antes de atualizar.
 
 Configuracao externa obrigatoria no Supabase Auth:
 
 - habilitar Confirm email;
 - adicionar a URL da Vercel em Site URL;
-- adicionar `https://seu-dominio.vercel.app/auth/confirm` em Redirect URLs;
+- adicionar `https://seu-dominio.vercel.app/auth/confirm` em Redirect URLs para confirmacao e recuperacao de senha;
 - manter tambem a URL local apenas quando for testar localmente.
 
 ### Banco Cora

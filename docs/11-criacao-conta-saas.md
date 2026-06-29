@@ -1,6 +1,6 @@
 # 11 - Criacao de Conta SaaS
 
-Este documento define o fluxo publico para uma nova escolinha criar conta na plataforma.
+Este documento define o fluxo publico para uma nova instituicao criar conta na plataforma.
 
 ## Decisao de produto
 
@@ -15,7 +15,7 @@ Criar uma nova conta SaaS nao e uma acao administrativa dentro de outro tenant. 
 ## Fluxo implementado
 
 1. Usuario acessa `/criar-conta`.
-2. Preenche nome da escolinha, slug, nome do responsavel, e-mail, telefone e senha.
+2. Preenche nome da conta, identificador publico, nome do responsavel, e-mail, telefone e senha.
 3. Aplicacao cria um tenant com status `pendente_confirmacao`.
 4. Aplicacao chama Supabase Auth `signUp` com metadata:
    - `onboarding_tipo = nova_conta_saas`
@@ -32,6 +32,23 @@ Criar uma nova conta SaaS nao e uma acao administrativa dentro de outro tenant. 
    - `tenant_memberships.status = ativo`
    - `tenant_account_signups.status = confirmado`
 9. Usuario entra no painel `/admin`.
+
+## Fluxos complementares de autenticacao
+
+Todos os fluxos abaixo reaproveitam o layout compartilhado de autenticacao (`AuthCard`, `AuthError`, `PasswordInput`) e mantem a linguagem de produto em "conta" para o usuario final.
+
+| Rota | Objetivo | Observacao |
+| --- | --- | --- |
+| `/reenviar-confirmacao` | Reenviar e-mail de confirmacao para contas pendentes | Usa `supabase.auth.resend` com callback `/auth/confirm?next=/admin` |
+| `/recuperar-senha` | Solicitar link de recuperacao de senha | Usa `supabase.auth.resetPasswordForEmail` com callback `/auth/confirm?next=/redefinir-senha` |
+| `/redefinir-senha` | Definir nova senha apos abrir o link recebido por e-mail | Exige sessao temporaria criada pelo callback de recuperacao |
+| `/admin/conta` | Trocar senha estando logado | Confirma a senha atual antes de atualizar a senha |
+
+O callback `/auth/confirm` diferencia o destino:
+
+- confirmacao de conta retorna para `/admin` com `conta=confirmada`;
+- recuperacao de senha retorna para `/redefinir-senha` com `fluxo=recuperacao`;
+- link de recuperacao invalido retorna para `/recuperar-senha?erro=link-invalido`.
 
 ## Migration necessaria
 
@@ -78,7 +95,7 @@ No painel do Supabase:
 
 1. Ative Confirm email.
 2. Configure Site URL com a URL da Vercel.
-3. Adicione Redirect URL:
+3. Adicione Redirect URL. O mesmo callback atende confirmacao de e-mail e recuperacao de senha:
 
 ```txt
 https://seu-projeto.vercel.app/auth/confirm

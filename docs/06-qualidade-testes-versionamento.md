@@ -6,8 +6,8 @@ Este documento define o padrao minimo de engenharia para evoluir o projeto com s
 
 | Item | Situacao |
 | --- | --- |
-| Git | Pasta `.git` existe, mas nao e repositorio valido (`git status` falha) |
-| Testes | Vitest configurado com `npm test` e testes unitarios iniciais |
+| Git | Repositorio Git valido; staging, commits e push ficam sob controle explicito do usuario |
+| Testes | Vitest configurado com `npm test` e testes unitarios iniciais, incluindo helpers de conta/autenticacao |
 | Lint | ESLint configurado com `npm run lint`; warnings herdados seguem registrados |
 | Build | `next build` passa com TypeScript ativo |
 | TypeScript | `strict: true` e `npm run typecheck` passam |

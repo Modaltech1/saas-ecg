@@ -8,7 +8,10 @@ Inventario das rotas observadas no projeto.
 | --- | --- | --- |
 | `/` | Auth | Redireciona para `/login`; proxy tambem redireciona por perfil |
 | `/login` | Admin/Professora | Login via Supabase Auth |
-| `/criar-conta` | Publico/SaaS | Cadastro de uma nova escolinha/tenant com confirmacao de e-mail |
+| `/criar-conta` | Publico/SaaS | Cadastro de uma nova instituicao/conta com confirmacao de e-mail |
+| `/reenviar-confirmacao` | Publico/Auth | Reenvio de confirmacao de e-mail |
+| `/recuperar-senha` | Publico/Auth | Solicita link de recuperacao de senha |
+| `/redefinir-senha` | Publico/Auth | Define nova senha apos link de recuperacao |
 | `/cadastro` | Publico | Pre-matricula externa |
 | `/pagamentos` | Publico | Consulta de pagamentos por CPF e geracao de PIX |
 | `/produtos` | Publico | Vitrine publica de produtos |
@@ -30,6 +33,7 @@ Inventario das rotas observadas no projeto.
 | `/admin/eventos` | Admin | CRUD de eventos |
 | `/admin/eventos/{id}` | Admin | Detalhe e inscricoes do evento |
 | `/admin/configuracoes` | Admin | Cora, webhook e contato |
+| `/admin/conta` | Admin | Dados da conta, seguranca e troca de senha |
 | `/professora` | Professora | Dashboard professora |
 | `/professora/turmas` | Professora | Turmas vinculadas |
 | `/professora/turmas/{id}` | Professora | Detalhe de turma da professora |

@@ -62,7 +62,12 @@ function LoginPageInner() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="senha">Senha</Label>
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="senha">Senha</Label>
+            <Link href="/recuperar-senha" className="text-xs font-semibold text-primary hover:underline">
+              Esqueci minha senha
+            </Link>
+          </div>
           <PasswordInput
             id="senha"
             name="senha"
@@ -83,10 +88,18 @@ function LoginPageInner() {
       </form>
 
       <div className="mt-5 border-t pt-4 text-center text-sm text-muted-foreground">
-        <span>Novo cliente? </span>
-        <Link href="/criar-conta" className="font-semibold text-primary hover:underline">
-          Criar conta
-        </Link>
+        <div>
+          <span>Novo cliente? </span>
+          <Link href="/criar-conta" className="font-semibold text-primary hover:underline">
+            Criar conta
+          </Link>
+        </div>
+        <div className="mt-2">
+          <span>E-mail ainda nao confirmado? </span>
+          <Link href="/reenviar-confirmacao" className="font-semibold text-primary hover:underline">
+            Reenviar confirmacao
+          </Link>
+        </div>
       </div>
     </AuthCard>
   )
